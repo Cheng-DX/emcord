@@ -1,4 +1,4 @@
-import type { UserOverview } from './models'
+import type { UserOverview } from '../../client/src/types/models'
 
 export type WSMessage = WSMessageOK | WSMessageError
 
