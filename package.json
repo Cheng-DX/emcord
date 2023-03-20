@@ -36,7 +36,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "concurrently \"nr dev:client\" \"nr dev:server\"",
+    "dev": "concurrently -n '🫤 ,🥔' 'nr dev:client' 'nr dev:server'",
     "dev:client": "cd packages/client && nr dev",
     "dev:server": "cd packages/server && nr dev",
     "lint": "eslint .",

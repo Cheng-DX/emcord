@@ -8,7 +8,6 @@ export interface LinkedList<T> {
   last: LinkedListNode<T> | null
   size: number
 }
-
 export function createLinkedList<T>(data: T[]) {
   let head!: LinkedListNode<T>
   let last!: LinkedListNode<T>
