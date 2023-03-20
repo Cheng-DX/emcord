@@ -1,0 +1,60 @@
+{
+  "name": "pkg-name",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@7.17.0",
+  "description": "",
+  "author": "Cheng-DX <chengdx0925@126.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/Cheng-DX/pkg-name#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cheng-DX/pkg-name.git"
+  },
+  "bugs": "https://github.com/Cheng-DX/pkg-name/issues",
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "turbo-build": "turbo run build",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "prepublishOnly": "nr build",
+    "release": "bumpp && npm publish",
+    "start": "esno src/index.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.27.0",
+    "@types/node": "^18.7.18",
+    "eslint": "^8.25.0",
+    "pnpm": "^7.13.4",
+    "turbo": "^1.6.1",
+    "typescript": "^4.8.3",
+    "unbuild": "^0.8.11",
+    "vite": "^3.1.7",
+    "vitest": "^0.24.1"
+  }
+}
