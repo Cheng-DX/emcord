@@ -13,9 +13,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
-      "types": [
-        "./packages/types/src"
+      "@emcord/types": [
+        "./packages/types/src/index.ts"
       ]
-    }
-  }
+    },
+  },
+  "include": [
+    "/**/*.ts"
+  ]
 }

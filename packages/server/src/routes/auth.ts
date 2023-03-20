@@ -1,8 +1,8 @@
 import type { Router } from 'express'
 import JWT from 'jsonwebtoken'
 import sha256 from 'crypto-js/sha256'
+import type { User } from '@emcord/types'
 import { secretKey } from '../consts'
-import type { User } from '../db/models'
 import { AuthModel, UserModel } from '../db/models'
 
 export function applyAuth(router: Router) {

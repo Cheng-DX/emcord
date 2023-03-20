@@ -1,5 +1,5 @@
 export interface Channel {
-  _id: string
+  id: string
   name: string
   usersOverview: UserOverview[]
   profileInfo?: string
@@ -7,7 +7,7 @@ export interface Channel {
 }
 
 export interface Auth {
-  _id: string
+  id: string
   userId: string
   email: string
   password: string
@@ -19,7 +19,7 @@ interface Reaction {
 }
 
 export interface Message {
-  _id: string
+  id: string
   from: UserOverview
   content: string
   time: Date
@@ -28,10 +28,10 @@ export interface Message {
 }
 
 export interface Server {
-  _id: string
+  id: string
   name: string
   owner: {
-    _id: string
+    id: string
     name: string
   }
   channels: string[]
@@ -40,7 +40,7 @@ export interface Server {
 }
 
 export interface User {
-  _id: string
+  id: string
   name: string
   hashTag: string
   avator: string

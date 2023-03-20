@@ -1,15 +1,7 @@
 import { Schema, model } from 'mongoose'
-import type { UserOverview } from './user'
+import { toJSON } from './plugins'
 import { UserOverViewSchema } from './user'
 import { required } from './utils'
-
-export interface Channel {
-  id: string
-  name: string
-  usersOverview: UserOverview[]
-  profileInfo?: string
-  group?: string
-}
 
 export const ChannelModel = model(
   'ChannelModel',
@@ -18,6 +10,6 @@ export const ChannelModel = model(
     usersOverview: required([UserOverViewSchema]),
     group: String,
     profileInfo: String,
-  }),
+  }, { toJSON }),
   'CHANNEL',
 )

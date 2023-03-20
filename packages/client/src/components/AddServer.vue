@@ -4,7 +4,7 @@ import { NButton, NFormItem, NInput, NUpload } from 'naive-ui'
 const serverName = ref('')
 
 function a() {
-  console.log('1')
+  // console.log('1')
 }
 </script>
 

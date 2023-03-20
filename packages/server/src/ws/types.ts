@@ -1,4 +1,4 @@
-import type { UserOverview } from '../db/models'
+import type { UserOverview } from '@emcord/types'
 
 export interface WSMessagePayload {
   token: string

@@ -1,17 +1,6 @@
 import { Schema, model } from 'mongoose'
+import { toJSON } from './plugins'
 import { required } from './utils'
-
-export interface Server {
-  id: string
-  name: string
-  owner: {
-    id: string
-    name: string
-  }
-  channels: string[]
-  avator?: string
-  profileInfo?: string
-}
 
 export const ServerSchema = new Schema({
   name: required(String),
@@ -21,7 +10,7 @@ export const ServerSchema = new Schema({
   channels: required([String]),
   avator: String,
   profileInfo: String,
-})
+}, { toJSON })
 
 export const ServerModel = model(
   'ServerModel',

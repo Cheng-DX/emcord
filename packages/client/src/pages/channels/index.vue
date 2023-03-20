@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { isOK } from '@emcord/types'
+import type { WSMessage, WSMessageOK } from '@emcord/types'
 import ChannelList from './ChannelList.vue'
-import type { WSMessage } from '~/types/im'
-import { isOK } from '~/types/im'
 
 const { params } = toRefs(useRoute())
 const { token } = useToken()
@@ -11,8 +11,8 @@ const { data, send, status } = useWebSocket<string>(
   () => `ws://localhost:9527/api/ws/channel?token=${token.value}`,
 )
 const all = ref<any[]>([])
-const history = useLocalStorage<WSMessage[]>(
-  `history-${params.value.channelId}-${userInfo.value?._id}`,
+const history = useLocalStorage<WSMessageOK[]>(
+  `history-${params.value.channelId}-${userInfo.value?.id}`,
   [],
   { mergeDefaults: true },
 )

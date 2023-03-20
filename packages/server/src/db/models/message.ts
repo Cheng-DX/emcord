@@ -1,22 +1,9 @@
 import type { Model } from 'mongoose'
 import { Schema, model } from 'mongoose'
-import type { UserOverview } from './user'
+import type { Message } from '@emcord/types'
+import { toJSON } from './plugins'
 import { UserOverViewSchema } from './user'
 import { required } from './utils'
-
-interface Reaction {
-  emoji: string
-  from: UserOverview
-}
-
-export interface Message {
-  id: string
-  from: UserOverview
-  content: string
-  time: Date
-  reactions?: Reaction[]
-  reply?: string
-}
 
 const modelMap = new Map<string, Model<any>>()
 
@@ -38,7 +25,7 @@ export function useMessageModel(channelId: string): Model<Message> {
           from: required(UserOverViewSchema),
         }],
         reply: String,
-      }),
+      }, { toJSON }),
       db,
     )
     modelMap.set(db, createdModel)

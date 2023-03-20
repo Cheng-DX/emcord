@@ -1,19 +1,8 @@
 import { Schema, model } from 'mongoose'
-import type { Server } from './server'
+import { toJSON } from './plugins'
 import { ServerSchema } from './server'
 import { required } from './utils'
 
-export interface User {
-  id: string
-  name: string
-  hashTag: string
-  avator: string
-  servers: Server[]
-  gender?: string
-  profileInfo?: string
-}
-
-export type UserOverview = Pick<User, 'name' | 'avator'> & { userId: string }
 export const UserOverViewSchema = {
   name: required(String),
   avator: required(String),
@@ -29,6 +18,6 @@ export const UserModel = model(
     servers: required([ServerSchema]),
     gender: String,
     profileInfo: String,
-  }),
+  }, { toJSON }),
   'USER',
 )

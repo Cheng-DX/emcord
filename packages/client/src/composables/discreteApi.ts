@@ -1,3 +1,4 @@
+import type { DialogOptions } from 'naive-ui'
 import {
   createDiscreteApi,
   darkTheme,
@@ -14,12 +15,6 @@ const {
     theme: darkTheme,
   },
 })
-
-// function withDefault<A extends any[], F extends (...args: A) => any>(srcFunc: F, ...args: A): F {
-//   return (...args: A) => {
-
-//   }
-// }
 
 function openDialog(content: string | (() => VNode), options: DialogOptions) {
   dialog.create({

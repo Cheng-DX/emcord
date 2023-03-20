@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Server } from '~/types/models'
+import type { Server } from '@emcord/types'
 
 const props = defineProps<{
   serverId: string | string[]

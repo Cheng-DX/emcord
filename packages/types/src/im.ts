@@ -2,7 +2,7 @@ import type { UserOverview } from './models'
 
 export type WSMessage = WSMessageOK | WSMessageError
 
-export interface Message {
+export interface MessageData {
   from: UserOverview
   content: string
   time: Date
@@ -18,7 +18,7 @@ export interface WSMessageError {
 
 export interface WSMessageOK {
   code: 200
-  data: Message
+  data: MessageData
 }
 
 export function isError(wsm: WSMessage): wsm is WSMessageError {

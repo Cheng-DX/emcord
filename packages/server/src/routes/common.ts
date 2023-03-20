@@ -1,6 +1,7 @@
+import type { Channel } from '@emcord/types'
 import type { Request, Response, Router } from 'express'
 import type { Model } from 'mongoose'
-import { type Channel, ChannelModel, ServerModel, UserModel } from '../db/models'
+import { ChannelModel, ServerModel, UserModel } from '../db/models'
 
 interface PathModelMap {
   path: string

@@ -1,4 +1,4 @@
-import type { User, UserOverview } from 'types'
+import type { User, UserOverview } from '@emcord/types'
 
 export function useUserInfo() {
   const userInfo = ref<User | null>(null)
@@ -12,7 +12,7 @@ export function useUserInfo() {
   const userOverview = computed<UserOverview | null>(() => {
     if (hasUserInfo) {
       return {
-        userId: userInfo.value!._id,
+        userId: userInfo.value!.id,
         avator: userInfo.value!.avator,
         name: userInfo.value!.name,
       }

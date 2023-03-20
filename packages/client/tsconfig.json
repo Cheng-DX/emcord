@@ -19,6 +19,9 @@
       "~/*": [
         "./src/*"
       ],
+      "@emcord/types": [
+        "../types/src/index.ts"
+      ]
     }
   },
   "include": [
