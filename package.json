@@ -36,19 +36,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
-    "turbo-build": "turbo run build",
-    "dev": "unbuild --stub",
+    "dev": "concurrently \"nr dev:client\" \"nr dev:server\"",
+    "dev:client": "cd packages/client && nr dev",
+    "dev:server": "cd packages/server && nr dev",
     "lint": "eslint .",
-    "prepublishOnly": "nr build",
-    "release": "bumpp && npm publish",
-    "start": "esno src/index.ts",
-    "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.27.0",
     "@types/node": "^18.7.18",
+    "concurrently": "^7.6.0",
     "eslint": "^8.25.0",
     "pnpm": "^7.13.4",
     "turbo": "^1.6.1",
