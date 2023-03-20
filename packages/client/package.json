@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@emcord/client",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -32,6 +32,6 @@
     "vite": "^4.1.0",
     "vite-plugin-pages": "^0.28.0",
     "vue-tsc": "^1.0.24",
-    "types": "workspace:*"
+    "@emcord/types": "workspace:*"
   }
 }

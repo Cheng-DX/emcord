@@ -1,4 +1,4 @@
-import type { User, UserOverview } from '~/types/models'
+import type { User, UserOverview } from 'types'
 
 export function useUserInfo() {
   const userInfo = ref<User | null>(null)

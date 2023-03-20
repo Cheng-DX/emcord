@@ -1,7 +1,8 @@
 {
-  "name": "pkg-name",
+  "name": "emcord",
   "type": "module",
   "version": "0.1.0",
+  "private": true,
   "packageManager": "pnpm@7.17.0",
   "description": "",
   "author": "Cheng-DX <chengdx0925@126.com>",
@@ -53,8 +54,8 @@
     "unbuild": "^0.8.11",
     "vite": "^3.1.7",
     "vitest": "^0.24.1",
-    "types": "workspace:*",
-    "client": "workspace:*",
-    "server": "workspace:*"
+    "@emcord/client": "workspace:*",
+    "@emcord/server": "workspace:*",
+    "@emcord/types": "workspace:*"
   }
 }

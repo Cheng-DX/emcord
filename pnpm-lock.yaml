@@ -5,28 +5,28 @@ importers:
   .:
     specifiers:
       '@antfu/eslint-config': ^0.27.0
+      '@emcord/client': workspace:*
+      '@emcord/server': workspace:*
+      '@emcord/types': workspace:*
       '@types/node': ^18.7.18
-      client: workspace:*
       concurrently: ^7.6.0
       eslint: ^8.25.0
       pnpm: ^7.13.4
-      server: workspace:*
       turbo: ^1.6.1
-      types: workspace:*
       typescript: ^4.8.3
       unbuild: ^0.8.11
       vite: ^3.1.7
       vitest: ^0.24.1
     devDependencies:
       '@antfu/eslint-config': 0.27.0_e24lxsqdqt3oba6r3j443w4ftm
+      '@emcord/client': link:packages/client
+      '@emcord/server': link:packages/server
+      '@emcord/types': link:packages/types
       '@types/node': 18.7.18
-      client: link:packages/client
       concurrently: 7.6.0
       eslint: 8.25.0
       pnpm: 7.13.4
-      server: link:packages/server
       turbo: 1.6.1
-      types: link:packages/types
       typescript: 4.8.3
       unbuild: 0.8.11
       vite: 3.1.7
@@ -35,6 +35,7 @@ importers:
   packages/client:
     specifiers:
       '@antfu/eslint-config': ^0.34.0
+      '@emcord/types': workspace:*
       '@iconify-json/carbon': ^1.1.11
       '@iconify-json/ic': ^1.1.10
       '@types/crypto-js': ^4.1.1
@@ -46,7 +47,6 @@ importers:
       crypto-js: ^4.1.1
       eslint: ^8.34.0
       naive-ui: ^2.34.2
-      types: workspace:*
       typescript: ^4.9.3
       unocss: ^0.47.6
       unplugin-auto-import: ^0.12.0
@@ -64,6 +64,7 @@ importers:
       vue-router: 4.1.6_vue@3.2.47
     devDependencies:
       '@antfu/eslint-config': 0.34.2_vgl77cfdswitgr47lm5swmv43m
+      '@emcord/types': link:../types
       '@iconify-json/carbon': 1.1.16
       '@iconify-json/ic': 1.1.13
       '@types/crypto-js': 4.1.1
@@ -71,7 +72,6 @@ importers:
       '@unocss/preset-icons': 0.47.6
       '@vitejs/plugin-vue': 4.1.0_vite@4.2.0+vue@3.2.47
       eslint: 8.36.0
-      types: link:../types
       typescript: 4.9.5
       unocss: 0.47.6_vite@4.2.0
       unplugin-auto-import: 0.12.2_@vueuse+core@9.13.0
@@ -82,6 +82,7 @@ importers:
   packages/server:
     specifiers:
       '@antfu/eslint-config': ^0.34.0
+      '@emcord/types': workspace:*
       '@types/crypto-js': ^4.1.1
       '@types/express': ^4.17.17
       '@types/jsonwebtoken': ^9.0.1
@@ -119,6 +120,7 @@ importers:
       utf-8-validate: 6.0.3
     devDependencies:
       '@antfu/eslint-config': 0.34.2_vgl77cfdswitgr47lm5swmv43m
+      '@emcord/types': link:../types
       '@types/crypto-js': 4.1.1
       '@types/express': 4.17.17
       '@types/jsonwebtoken': 9.0.1
