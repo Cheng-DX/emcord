@@ -16,6 +16,7 @@ const history = useLocalStorage<WSMessageOK[]>(
   [],
   { mergeDefaults: true },
 )
+
 watch(data, message => {
   if (message) {
     const msg = JSON.parse(message) as WSMessage

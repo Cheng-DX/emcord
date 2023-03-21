@@ -32,3 +32,6 @@ export function useMessageModel(channelId: string): Model<Message> {
     return createdModel
   }
 }
+
+// q: discord有哪些接口
+// a: https://discord.com/developers/docs/reference

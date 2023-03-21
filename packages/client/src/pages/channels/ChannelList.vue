@@ -39,7 +39,7 @@ const { data: channel } = useFetch(() => `/api/channel/${server.value?.channels?
           mr-10px
         >
         <div>
-          <router-link :to="`/channels/${serverId}/${channel?._id}`" c-text-3>
+          <router-link :to="`/channels/${serverId}/${channel?.id}`" c-text-3>
             {{ channel?.name }}
           </router-link>
         </div>

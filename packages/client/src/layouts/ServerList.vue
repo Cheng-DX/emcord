@@ -32,14 +32,14 @@ function addServer() {
     <Spliter h-2px w-32px mb-8px mt-8px />
     <div
       v-for="server in servers"
-      :key="server._id"
+      :key="server.id"
       flex
     >
       <ServerButton
         :name="server.name"
-        :to="`/channels/${server._id}/-1`"
+        :to="`/channels/${server.id}/-1`"
         :avator="server.avator"
-        :active="route.path.includes(server._id)"
+        :active="route.path.includes(server.id)"
       />
     </div>
     <ServerButton
