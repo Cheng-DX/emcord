@@ -1,25 +1,3 @@
-/**
- *   {
-    path: '/users/:id',
-    method: 'get',
-  },
-  {
-    path: '/users/@me',
-    method: 'get',
-  },
-  {
-    path: '/users/@me',
-    method: 'patch',
-  },
-  {
-    path: '/users/@me/servers',
-    method: 'get',
-  },
-  {
-    path: '/users/@me/channels',
-    method: 'post',
-  },
- */
 import type { User } from '@emcord/types'
 import type { Router } from 'express'
 import { ServerModel, UserModel } from '../../db/models'
@@ -70,15 +48,17 @@ export function applyUser(router: Router) {
   })
 
   router.get('/users/@me/servers', async (req, res) => {
+    const { limit } = req.query
     const { userId } = getAuth(req)
     try {
       const { servers } = await findUser(userId)
-      const serverList = await ServerModel.find({
-        _id: {
-          $in: servers,
-        },
-      })
-
+      const serverList = await ServerModel
+        .find({
+          _id: {
+            $in: servers,
+          },
+        })
+        .limit(Number(limit))
       ok(res, serverList)
     }
     catch (e: any) {

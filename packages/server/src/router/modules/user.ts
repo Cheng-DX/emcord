@@ -18,8 +18,4 @@ export const users: Route[] = [
     path: '/users/@me/servers',
     method: 'get',
   },
-  {
-    path: '/users/@me/channels',
-    method: 'post',
-  },
 ]
