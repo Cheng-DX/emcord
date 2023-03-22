@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import { toJSON } from './plugins'
+import { toJSON, toObject } from './plugins'
 import { required } from './utils'
 
 export const AuthModel = model(
@@ -8,6 +8,6 @@ export const AuthModel = model(
     userId: required(String),
     email: required(String),
     password: required(String),
-  }, { toJSON }),
+  }, { toJSON, toObject }),
   'AUTH',
 )

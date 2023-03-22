@@ -3,11 +3,11 @@ import consola from 'consola'
 import mongoose from 'mongoose'
 import { expressjwt } from 'express-jwt'
 import { secretKey } from './consts'
-import { router } from './routes'
+import { router } from './router'
 import { initWSS } from './ws'
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/make-a-discord-local')
+  .connect('mongodb://127.0.0.1:27017/emcord')
   .then(() => consola.success('MongoDB database Connected'))
   .catch((err) => {
     consola.warn('Connection failed')
@@ -27,6 +27,7 @@ app.use(
     ],
   }),
 )
+
 // @ts-expect-error token
 app.use((err, _req, res, _next) => {
   if (err.name === 'UnauthorizedError') {
@@ -40,6 +41,7 @@ app.use((err, _req, res, _next) => {
     message: 'Unkown error',
   })
 })
+
 app.use('/api', router)
 initWSS('/api/ws/channel', 9527)
 app.listen(3000, () => {

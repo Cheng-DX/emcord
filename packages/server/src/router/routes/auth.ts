@@ -2,36 +2,30 @@ import type { Router } from 'express'
 import JWT from 'jsonwebtoken'
 import sha256 from 'crypto-js/sha256'
 import type { User } from '@emcord/types'
-import { secretKey } from '../consts'
-import { AuthModel, UserModel } from '../db/models'
+import { secretKey } from '../../consts'
+import { AuthModel, UserModel } from '../../db/models'
+import { CustomError, err, ok } from '../../utils'
 
 export function applyAuth(router: Router) {
   router.post('/login', async (req, res) => {
-    const { email, password, expiresIn = '24h' } = req.body
+    const { email, password, expiresIn = '30d' } = req.body
     try {
       const userAuth = await AuthModel.findOne({ email, password })
-      if (!userAuth) {
-        res.status(488).json({
-          message: 'No such user or password is wrong',
-        })
-      }
+      if (!userAuth) { throw new CustomError('INVALID_USER') }
+
       else {
         const { userId } = userAuth
         const user = await UserModel.findById(userId)
 
-        if (!user) {
-          res.status(488).json({
-            message: 'No such user or password is wrong',
-          })
-          return
-        }
+        if (!user)
+          throw new CustomError('INVALID_USER')
 
         const token = JWT.sign(
           { userId },
           secretKey,
           { expiresIn },
         )
-        res.status(200).json({
+        ok(res, {
           message: 'Login success',
           token,
           user,
@@ -39,9 +33,7 @@ export function applyAuth(router: Router) {
       }
     }
     catch (e: any) {
-      res.status(500).json({
-        message: e.message,
-      })
+      err(res, e)
     }
   })
 
@@ -59,9 +51,7 @@ export function applyAuth(router: Router) {
           email: hashedEmail,
           password: hashedPassword,
         })
-        res.status(200).json({
-          message: 'success',
-        })
+        ok(res, 'Registered successfully')
       }
       else {
         res.status(488).json({
@@ -69,10 +59,8 @@ export function applyAuth(router: Router) {
         })
       }
     }
-    catch (e) {
-      res.status(500).json({
-        message: e,
-      })
+    catch (e: any) {
+      err(res, e)
     }
   })
 }

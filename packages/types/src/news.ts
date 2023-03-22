@@ -8,7 +8,6 @@ export interface Auth {
 export interface User {
   id: string
   name: string
-  hashTag: string
   avator: string
   servers: string[]
   profile?: string
@@ -28,7 +27,8 @@ export interface Channel {
 export interface Server {
   id: string
   name: string
-  users: string[]
+  members: string[]
+  owner: UserOverview
   channels: Channel[]
   avator?: string
   description?: string
@@ -40,16 +40,16 @@ interface EmojiReaction {
     name: string
   }
   count: number
-  userIds: string[]
+  users: string[]
 }
 type AttachmentType = 'IMAGE' | 'VIDEO' | 'FILE'
 interface Attachment {
   type: AttachmentType
   url: string
   filename: string
-  width?: string | number
-  height?: string | number
-  size?: string | number
+  width?: number
+  height?: number
+  size?: number
 }
 export type MessageType = 'NORMAL' | 'ATTACH' | 'LINK' | 'MARKDOWN'
 
@@ -64,7 +64,7 @@ export interface Message {
   embeds: any[] // TODO: fix website infos
   mentions: UserOverview[]
   pinned: boolean
-  mention_everyone: boolean
+  mentionEveryone: boolean
   timestamp: Date
   edited: boolean
   refencedMessage?: Message

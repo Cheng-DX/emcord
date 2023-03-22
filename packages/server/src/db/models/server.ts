@@ -1,16 +1,18 @@
 import { Schema, model } from 'mongoose'
-import { toJSON } from './plugins'
+import { ChannelSchema } from './channel'
+import { toJSON, toObject } from './plugins'
+import { UserOverViewSchemaSrc } from './user'
 import { required } from './utils'
 
 export const ServerSchema = new Schema({
   name: required(String),
-  owner: required({
-    name: required(String),
-  }),
-  channels: required([String]),
+  owner: required(UserOverViewSchemaSrc),
+  memebers: required([String]),
+  channels: required([ChannelSchema]),
+
   avator: String,
-  profileInfo: String,
-}, { toJSON })
+  description: String,
+}, { toJSON, toObject })
 
 export const ServerModel = model(
   'ServerModel',

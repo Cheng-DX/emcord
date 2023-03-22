@@ -1,15 +1,11 @@
-import { Schema, model } from 'mongoose'
-import { toJSON } from './plugins'
-import { UserOverViewSchema } from './user'
+import { Schema } from 'mongoose'
+import { toJSON, toObject } from './plugins'
 import { required } from './utils'
 
-export const ChannelModel = model(
-  'ChannelModel',
-  new Schema({
-    name: required(String),
-    usersOverview: required([UserOverViewSchema]),
-    group: String,
-    profileInfo: String,
-  }, { toJSON }),
-  'CHANNEL',
-)
+export const ChannelSchema = new Schema({
+  name: required(String),
+  type: required(String),
+  isPrivate: required(Boolean),
+  profile: String,
+  group: String,
+}, { toJSON, toObject })

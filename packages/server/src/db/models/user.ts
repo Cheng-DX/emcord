@@ -1,23 +1,22 @@
 import { Schema, model } from 'mongoose'
-import { toJSON } from './plugins'
-import { ServerSchema } from './server'
+import { toJSON, toObject } from './plugins'
 import { required } from './utils'
 
-export const UserOverViewSchema = {
+export const UserOverViewSchemaSrc = {
   name: required(String),
   avator: required(String),
-  userId: required(String),
+  profile: String,
 }
+
+const UserSchema = new Schema({
+  name: required(String),
+  avator: required(String),
+  servers: required([String]),
+  profile: String,
+}, { toJSON, toObject })
 
 export const UserModel = model(
   'UserModel',
-  new Schema({
-    name: required(String),
-    hashTag: required(String),
-    avator: required(String),
-    servers: required([ServerSchema]),
-    gender: String,
-    profileInfo: String,
-  }, { toJSON }),
+  UserSchema,
   'USER',
 )
