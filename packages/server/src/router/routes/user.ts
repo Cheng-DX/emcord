@@ -48,7 +48,7 @@ export function applyUser(router: Router) {
   })
 
   router.get('/users/@me/servers', async (req, res) => {
-    const { limit } = req.query
+    const { limit = 1 } = req.query
     const { userId } = getAuth(req)
     try {
       const { servers } = await findUser(userId)

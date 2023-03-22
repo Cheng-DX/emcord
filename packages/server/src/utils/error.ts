@@ -4,6 +4,8 @@ export const errorMap = {
   PERMISSION_DENIED: 'user has no permission to access this resource',
   UNAUTHORIZED: 'user has no token or token is invalid',
   INVALID_IDENTITY: 'user has valid token but identity is invalid',
+  INVALID_REQUEST: 'some fields in request body is invalid',
+  DENIED: 'action denied',
 }
 
 export type CustomErrorType = keyof typeof errorMap
@@ -22,4 +24,8 @@ export class CustomError extends Error {
       message: this.message,
     }
   }
+}
+
+export function isValidChannelType(type: number) {
+  return [0, 1].includes(type)
 }

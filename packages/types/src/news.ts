@@ -18,7 +18,8 @@ export type UserPreview = Omit<User, 'servers'>
 export interface Channel {
   id: string
   name: string
-  type: 'TEXT' | 'VOICE'
+  type: 0 | // text
+  1 // voice
   isPrivate: boolean
   profile?: string
   group?: string
@@ -29,7 +30,7 @@ export interface Server {
   name: string
   members: string[]
   owner: UserPreview
-  channels: Channel[]
+  channels: string[]
   avator?: string
   description?: string
 }

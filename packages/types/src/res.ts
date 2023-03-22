@@ -1,5 +1,12 @@
-import type { Server, UserPreview } from './news'
+import type { Channel, Server, UserPreview } from './news'
 
-export type ServerPreview = Omit<Server, 'members'> & {
+export type ServerPreview = Server & {
   membersPreview: UserPreview[]
+  channelsPreview: Channel[]
+}
+
+export interface Member {
+  userId: string
+  userPreview: UserPreview
+  nickname?: string
 }

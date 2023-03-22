@@ -60,15 +60,4 @@ export const server: Route[] = [
     path: '/servers/:id/members/:userId',
     method: 'delete',
   },
-  {
-    description: 'Update current user',
-    path: '/servers/:id/members/@me',
-    method: 'patch',
-  },
-  {
-    path: '/servers/:id/members/:userId',
-    method: 'patch',
-  },
-
-  // TODO: roles
 ]

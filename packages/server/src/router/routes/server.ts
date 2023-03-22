@@ -1,9 +1,36 @@
 import type { Router } from 'express'
-import type { Server, ServerPreview } from '@emcord/types'
-import type { Document } from 'mongoose'
-import { CustomError, err, getAuth, ok } from '../../utils'
-import { ServerModel, UserModel } from '../../db/models'
+import type { ServerPreview } from '@emcord/types'
+import { CustomError, err, getAuth, isValidChannelType, ok } from '../../utils'
+import { ChannelModel, ServerModel, UserModel } from '../../db/models'
 import { findUser } from './user'
+
+async function getServerPreview(id: string, query?: {
+  memberLimit?: number
+  channelLimit?: number
+}) {
+  const { memberLimit = 1, channelLimit = 1 } = query || {}
+  const server = await findServer(id)
+  const membersPreview: any = await UserModel
+    .find({
+      _id: { $in: server.members },
+    })
+    .limit(Number(memberLimit))
+    .select('-servers')
+
+  const channelsPreview: any = await ChannelModel
+    .find({
+      _id: { $in: server.channels },
+    })
+    .limit(Number(channelLimit))
+
+  const serverPreview: ServerPreview = {
+    ...server.toObject(),
+    membersPreview,
+    channelsPreview,
+  }
+
+  return serverPreview
+}
 
 async function findServer(id: string, options?: {
   premission?: boolean
@@ -59,19 +86,8 @@ export function applyServer(router: Router) {
   router.get('/servers/:id/preview', async (req, res) => {
     const { id } = req.params
     try {
-      const server = await findServer(id)
-      const membersPreview: any = await UserModel
-        .find({
-          _id: { $in: server.members },
-        })
-        .select('-servers')
-
-      const serverPreview: ServerPreview = {
-        ...server.toObject(),
-        membersPreview,
-      }
-
-      return ok(res, serverPreview)
+      const serverPreview = await getServerPreview(id, req.query)
+      ok(res, serverPreview)
     }
     catch (e: any) {
       err(res, e)
@@ -121,10 +137,17 @@ export function applyServer(router: Router) {
 export function applyServerChannels(router: Router) {
   router.get('/servers/:id/channels', async (req, res) => {
     const { id } = req.params
+    const { limit = 1 } = req.query
     try {
       const server = await findServer(id)
-      ok(res, server.channels)
+      const channels: any = await ChannelModel
+        .find({
+          _id: { $in: server.channels },
+        })
+        .limit(Number(limit))
+      ok(res, channels)
     }
+
     catch (e: any) {
       err(res, e)
     }
@@ -133,22 +156,16 @@ export function applyServerChannels(router: Router) {
   router.post('/servers/:id/channels', async (req, res) => {
     const { id } = req.params
     const { userId } = getAuth(req)
-    const { name, description } = req.body
-    try {
-      const server = await findServer(id)
-      if (!server.members.includes(userId))
-        throw new CustomError('PERMISSION_DENIED')
+    const payload = req.body
 
-      const channel = await ServerModel.findByIdAndUpdate(id, {
-        $push: {
-          channels: {
-            name,
-            description,
-            messages: [],
-          },
-        },
-      }, {
-        new: true,
+    try {
+      await findServer(id, {
+        premission: true,
+        userId,
+      })
+      const channel = await ChannelModel.create(payload)
+      await ServerModel.findByIdAndUpdate(id, {
+        $push: { channels: channel.id },
       })
       ok(res, channel)
     }
@@ -160,22 +177,21 @@ export function applyServerChannels(router: Router) {
   router.patch('/servers/:id/channels/:channelId', async (req, res) => {
     const { id, channelId } = req.params
     const { userId } = getAuth(req)
-    const { name, description } = req.body
+    const channelPayload = req.body
     try {
-      const server = await findServer(id)
-      if (!server.members.includes(userId))
-        throw new CustomError('PERMISSION_DENIED')
+      const { type } = channelPayload
+      if (type !== undefined && !isValidChannelType(type))
+        throw new CustomError('INVALID_REQUEST')
 
-      const channel = await ServerModel.findByIdAndUpdate(id, {
-        $set: {
-          [`channels.${channelId}`]: {
-            name,
-            description,
-          },
-        },
-      }, {
-        new: true,
+      const server = await findServer(id, {
+        premission: true,
+        userId,
       })
+
+      if (!server.channels.includes(channelId))
+        throw new CustomError('INVALID_IDENTITY')
+
+      const channel = await ChannelModel.findByIdAndUpdate(channelId, channelPayload, { new: true })
       ok(res, channel)
     }
     catch (e: any) {
@@ -187,20 +203,115 @@ export function applyServerChannels(router: Router) {
     const { id, channelId } = req.params
     const { userId } = getAuth(req)
     try {
-      const server = await findServer(id)
-      if (!server.members.includes(userId))
-        throw new CustomError('PERMISSION_DENIED')
+      await findServer(id, {
+        premission: true,
+        userId,
+      })
 
       const channel = await ServerModel.findByIdAndUpdate(id, {
         $pull: {
-          channels: {
-            _id: channelId,
-          },
+          channels: channelId,
         },
       }, {
         new: true,
       })
       ok(res, channel)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+}
+
+export function applyServerMembers(router: Router) {
+  router.get('/servers/:id/members', async (req, res) => {
+    const { id } = req.params
+    const { limit = 1 } = req.query
+    try {
+      const server = await findServer(id)
+      const members = await UserModel
+        .find({
+          _id: { $in: server.members },
+        })
+        .limit(Number(limit))
+        .select('-servers')
+      ok(res, members)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.get('/servers/:id/members/search', async (req, res) => {
+    const { id } = req.params
+    const { query, limit = 1 } = req.query
+    try {
+      if (!query)
+        throw new CustomError('INVALID_REQUEST')
+
+      const server = await findServer(id)
+      const members = await UserModel
+        .find({
+          _id: { $in: server.members },
+          $where: `this.name.toLowerCase().includes('${query}')`,
+        })
+        .select('-servers')
+        .limit(Number(limit))
+
+      ok(res, members)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.put('/servers/:id/members/:userId', async (req, res) => {
+    const { id, userId } = req.params
+    const { userId: authUserId } = getAuth(req)
+    try {
+      const server = await findServer(id, {
+        premission: true,
+        userId: authUserId,
+      })
+      if (server.members.includes(userId)) {
+        ok(res, server)
+        return
+      }
+
+      await ServerModel.findByIdAndUpdate(id, {
+        $push: {
+          members: userId,
+        },
+      }, {
+        new: true,
+      })
+      ok(res, getServerPreview(id, {
+        memberLimit: Number.NaN,
+      }))
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.delete('/servers/:id/members/:userId', async (req, res) => {
+    const { id, userId } = req.params
+    const { userId: authUserId } = getAuth(req)
+    try {
+      if (userId === authUserId)
+        throw new CustomError('DENIED')
+      await findServer(id, {
+        premission: true,
+        userId: authUserId,
+      })
+      const server = await ServerModel.findByIdAndUpdate(id, {
+        $pull: {
+          members: userId,
+        },
+      }, {
+        new: true,
+      })
+      ok(res, server)
     }
     catch (e: any) {
       err(res, e)
