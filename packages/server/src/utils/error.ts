@@ -3,6 +3,7 @@ export const errorMap = {
   DATABASE_ERROR: 'database query error',
   PERMISSION_DENIED: 'user has no permission to access this resource',
   UNAUTHORIZED: 'user has no token or token is invalid',
+  INVALID_IDENTITY: 'user has valid token but identity is invalid',
 }
 
 export type CustomErrorType = keyof typeof errorMap

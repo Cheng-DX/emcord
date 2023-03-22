@@ -1,4 +1,3 @@
-import type { User } from '@emcord/types'
 import type { Router } from 'express'
 import { ServerModel, UserModel } from '../../db/models'
 import { CustomError, err, getAuth, ok } from '../../utils'
@@ -36,10 +35,11 @@ export function applyUser(router: Router) {
 
   router.patch('/users/@me', async (req, res) => {
     const { userId } = getAuth(req)
-    const user = req.body
+    const { name, avator, profile } = req.body
     try {
-      await UserModel.findByIdAndUpdate(userId, user as User)
-      const patchedUser = await findUser(userId)
+      const patchedUser = await UserModel.findByIdAndUpdate(
+        userId, { name, avator, profile }, { new: true },
+      )
       ok(res, patchedUser)
     }
     catch (e: any) {

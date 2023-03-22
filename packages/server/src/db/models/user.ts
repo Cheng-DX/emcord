@@ -3,6 +3,7 @@ import { toJSON, toObject } from './plugins'
 import { required } from './utils'
 
 export const UserOverViewSchemaSrc = {
+  _id: required(String),
   name: required(String),
   avator: required(String),
   profile: String,

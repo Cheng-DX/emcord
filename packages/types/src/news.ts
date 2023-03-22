@@ -13,7 +13,7 @@ export interface User {
   profile?: string
 }
 
-export type UserOverview = Omit<User, 'servers'>
+export type UserPreview = Omit<User, 'servers'>
 
 export interface Channel {
   id: string
@@ -28,7 +28,7 @@ export interface Server {
   id: string
   name: string
   members: string[]
-  owner: UserOverview
+  owner: UserPreview
   channels: Channel[]
   avator?: string
   description?: string
@@ -58,11 +58,11 @@ export interface Message {
   type: MessageType
   content: string
   channelId: string
-  author: UserOverview
+  author: UserPreview
   reactions: EmojiReaction[]
   attachments: Attachment[]
   embeds: any[] // TODO: fix website infos
-  mentions: UserOverview[]
+  mentions: UserPreview[]
   pinned: boolean
   mentionEveryone: boolean
   timestamp: Date

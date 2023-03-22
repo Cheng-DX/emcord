@@ -7,7 +7,7 @@ import { required } from './utils'
 export const ServerSchema = new Schema({
   name: required(String),
   owner: required(UserOverViewSchemaSrc),
-  memebers: required([String]),
+  members: required([String]),
   channels: required([ChannelSchema]),
 
   avator: String,
