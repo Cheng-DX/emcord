@@ -1,10 +1,7 @@
-import type { Model } from 'mongoose'
 import { Schema, model } from 'mongoose'
 import { toJSON, toObject } from './plugins'
-import { UserOverViewSchemaSrc } from './user'
+import { UserPreviewSchemaSrc } from './user'
 import { required } from './utils'
-
-const modelMap = new Map<string, Model<any>>()
 
 const ReactionSchemaSrc = {
   emoji: {
@@ -24,35 +21,30 @@ const AttachmentSchemaSrc = {
   size: Number,
 }
 
+export const MessagePreviewSrc = {
+  type: required(String),
+  author: required(UserPreviewSchemaSrc),
+  content: required(String),
+}
+
 export const MessageSchemaSrc = {
   type: required(String),
   content: required(String),
   channelId: required(String),
-  author: required(UserOverViewSchemaSrc),
+  author: required(UserPreviewSchemaSrc),
   reactions: required([ReactionSchemaSrc]),
   attachments: required([AttachmentSchemaSrc]),
   embeds: required([Object]),
-  mentions: required([UserOverViewSchemaSrc]),
+  mentions: required([UserPreviewSchemaSrc]),
   pinned: required(Boolean),
   mentionEveryone: required(Boolean),
   timestamp: required(Date),
   edited: required(Boolean),
-  refencedMessage: {},
+  refencedMessage: MessagePreviewSrc,
 }
-MessageSchemaSrc.refencedMessage = MessageSchemaSrc
 
-export function useMessageModel(channelId: string): Model<typeof MessageSchemaSrc> {
-  const db = `MESSAGE-${channelId}`
-  const mapedModel = modelMap.get(db)
-  if (mapedModel) { return mapedModel }
-
-  else {
-    const createdModel = model<typeof MessageSchemaSrc>(
-      db,
-      new Schema(MessageSchemaSrc, { toJSON, toObject }),
-      db,
-    )
-    modelMap.set(db, createdModel)
-    return createdModel
-  }
-}
+export const MessageModel = model(
+  'MessageModel',
+  new Schema(MessageSchemaSrc, { toJSON, toObject }),
+  'MESSAGE',
+)

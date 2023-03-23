@@ -6,6 +6,7 @@ export const ChannelSchema = new Schema({
   name: required(String),
   type: required(Number),
   isPrivate: required(Boolean),
+  serverId: required(String),
   profile: String,
   group: String,
 }, { toJSON, toObject })

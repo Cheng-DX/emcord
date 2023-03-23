@@ -4,7 +4,7 @@ import { CustomError, err, getAuth, isValidChannelType, ok } from '../../utils'
 import { ChannelModel, ServerModel, UserModel } from '../../db/models'
 import { findUser } from './user'
 
-async function getServerPreview(id: string, query?: {
+export async function getServerPreview(id: string, query?: {
   memberLimit?: number
   channelLimit?: number
 }) {
@@ -32,7 +32,7 @@ async function getServerPreview(id: string, query?: {
   return serverPreview
 }
 
-async function findServer(id: string, options?: {
+export async function findServer(id: string, options?: {
   premission?: boolean
   userId: string
 }) {
@@ -163,7 +163,10 @@ export function applyServerChannels(router: Router) {
         premission: true,
         userId,
       })
-      const channel = await ChannelModel.create(payload)
+      const channel = await ChannelModel.create({
+        ...payload,
+        serverId: id,
+      })
       await ServerModel.findByIdAndUpdate(id, {
         $push: { channels: channel.id },
       })
@@ -179,7 +182,7 @@ export function applyServerChannels(router: Router) {
     const { userId } = getAuth(req)
     const channelPayload = req.body
     try {
-      const { type } = channelPayload
+      const { type, name, isPrivate, profile, group } = channelPayload
       if (type !== undefined && !isValidChannelType(type))
         throw new CustomError('INVALID_REQUEST')
 
@@ -191,7 +194,9 @@ export function applyServerChannels(router: Router) {
       if (!server.channels.includes(channelId))
         throw new CustomError('INVALID_IDENTITY')
 
-      const channel = await ChannelModel.findByIdAndUpdate(channelId, channelPayload, { new: true })
+      const channel = await ChannelModel.findByIdAndUpdate(channelId, {
+        type, name, isPrivate, profile, group,
+      }, { new: true })
       ok(res, channel)
     }
     catch (e: any) {
@@ -207,14 +212,12 @@ export function applyServerChannels(router: Router) {
         premission: true,
         userId,
       })
-
-      const channel = await ServerModel.findByIdAndUpdate(id, {
+      await ServerModel.findByIdAndUpdate(id, {
         $pull: {
           channels: channelId,
         },
-      }, {
-        new: true,
-      })
+      }, { new: true })
+      const channel = await ChannelModel.findByIdAndRemove(channelId)
       ok(res, channel)
     }
     catch (e: any) {

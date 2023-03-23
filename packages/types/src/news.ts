@@ -43,7 +43,8 @@ interface EmojiReaction {
   count: number
   users: string[]
 }
-type AttachmentType = 'IMAGE' | 'VIDEO' | 'FILE'
+type AttachmentType = 0 | 1 | 2
+// 'IMAGE' | 'VIDEO' | 'FILE'
 interface Attachment {
   type: AttachmentType
   url: string
@@ -52,7 +53,8 @@ interface Attachment {
   height?: number
   size?: number
 }
-export type MessageType = 'NORMAL' | 'ATTACH' | 'LINK' | 'MARKDOWN'
+export type MessageType = 0 | 1 | 2 | 3
+// 'NORMAL' | 'ATTACH' | 'LINK' | 'MARKDOWN'
 
 export interface Message {
   id: string

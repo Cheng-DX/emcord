@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose'
 import { toJSON, toObject } from './plugins'
 import { required } from './utils'
 
-export const UserOverViewSchemaSrc = {
+export const UserPreviewSchemaSrc = {
   _id: required(String),
   name: required(String),
   avator: required(String),
