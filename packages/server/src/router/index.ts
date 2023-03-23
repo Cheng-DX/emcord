@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   applyAuth,
   applyChannelMessage,
+  applyChannelPins,
   applyServer,
   applyServerChannels,
   applyServerMembers,
@@ -15,9 +16,7 @@ applyServer(router)
 applyServerChannels(router)
 applyServerMembers(router)
 applyChannelMessage(router)
-
-// applyCommon(router)
-// applyMessage(router)
+applyChannelPins(router)
 
 router.all('/*', (_req, res) => {
   res.status(404).json({

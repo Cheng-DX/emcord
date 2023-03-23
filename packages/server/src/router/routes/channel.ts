@@ -45,7 +45,7 @@ export async function formatMsg(
 }
 
 export async function findChannel(id: string, options?: {
-  premission?: 'OWNER' | 'MEMBER'
+  premission?: 'OWNER' | 'MEMBER' | 'MANAGER'
   userId: string
 }) {
   const { premission = false, userId = '' } = options || {}
@@ -59,6 +59,10 @@ export async function findChannel(id: string, options?: {
     throw new CustomError('PERMISSION_DENIED', 'You need a MEMBER permission to send a message in this channel')
 
   if (premission === 'OWNER' && server.owner._id !== userId)
+    throw new CustomError('PERMISSION_DENIED', 'You need an OWNER permission to send a message in this channel')
+
+  // TODO: MANAGER should use a different permission system
+  if (premission === 'MANAGER' && server.owner._id !== userId)
     throw new CustomError('PERMISSION_DENIED', 'You need an OWNER permission to send a message in this channel')
 
   return {
@@ -165,6 +169,72 @@ export function applyChannelMessage(router: Router) {
         'author.userId': auth.userId,
       }, { new: true })
       ok(res, message)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+}
+
+export function applyChannelPins(router: Router) {
+  router.get('/channels/:id/pins', async (req, res) => {
+    const { id } = req.params
+    const { userId } = getAuth(req)
+    const { limit = 1 } = req.query
+    try {
+      await findChannel(id, {
+        premission: 'MEMBER',
+        userId,
+      })
+      const messages = await MessageModel
+        .find({
+          channelId: id,
+          pinned: true,
+        })
+        .limit(Number(limit))
+      ok(res, messages)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.put('/channels/:id/pins/:messageId', async (req, res) => {
+    const { id, messageId } = req.params
+    const { userId } = getAuth(req)
+    try {
+      await findChannel(id, {
+        premission: 'MANAGER',
+        userId,
+      })
+      const messages = await MessageModel
+        .findOneAndUpdate({
+          id: messageId,
+          channelId: id,
+        }, { pinned: true }, { new: true })
+
+      ok(res, messages)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.delete('/channels/:id/pins/:messageId', async (req, res) => {
+    const { id, messageId } = req.params
+    const { userId } = getAuth(req)
+    try {
+      await findChannel(id, {
+        premission: 'MANAGER',
+        userId,
+      })
+      const messages = await MessageModel
+        .findOneAndUpdate({
+          id: messageId,
+          channelId: id,
+        }, { pinned: false }, { new: true })
+
+      ok(res, messages)
     }
     catch (e: any) {
       err(res, e)
