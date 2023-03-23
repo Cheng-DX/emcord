@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   applyAuth,
+  applyChannelMessage,
   applyServer,
   applyServerChannels,
   applyServerMembers,
@@ -13,6 +14,7 @@ applyUser(router)
 applyServer(router)
 applyServerChannels(router)
 applyServerMembers(router)
+applyChannelMessage(router)
 
 // applyCommon(router)
 // applyMessage(router)

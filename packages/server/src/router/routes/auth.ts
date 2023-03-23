@@ -21,7 +21,12 @@ export function applyAuth(router: Router) {
           throw new CustomError('INVALID_USER')
 
         const token = JWT.sign(
-          { userId },
+          {
+            userId,
+            name: user.name,
+            avator: user.avator,
+            profile: user.profile,
+          },
           secretKey,
           { expiresIn },
         )

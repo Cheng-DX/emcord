@@ -1,1 +1,1 @@
-export const secretKey = 'emcord-express-jwt-secret'
+export const secretKey = 'emcord-express-jwt-secret-v2'

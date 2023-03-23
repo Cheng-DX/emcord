@@ -45,7 +45,7 @@ interface EmojiReaction {
 }
 type AttachmentType = 0 | 1 | 2
 // 'IMAGE' | 'VIDEO' | 'FILE'
-interface Attachment {
+export interface Attachment {
   type: AttachmentType
   url: string
   filename: string
@@ -56,6 +56,11 @@ interface Attachment {
 export type MessageType = 0 | 1 | 2 | 3
 // 'NORMAL' | 'ATTACH' | 'LINK' | 'MARKDOWN'
 
+export interface Embed {
+  title: string
+  description: string
+  image?: string
+}
 export interface Message {
   id: string
   type: MessageType
@@ -64,11 +69,11 @@ export interface Message {
   author: UserPreview
   reactions: EmojiReaction[]
   attachments: Attachment[]
-  embeds: any[] // TODO: fix website infos
+  embeds: Embed[]
   mentions: UserPreview[]
   pinned: boolean
   mentionEveryone: boolean
   timestamp: Date
   edited: boolean
-  refencedMessage?: Message
+  referencedMessage?: string
 }

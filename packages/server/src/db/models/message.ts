@@ -13,7 +13,7 @@ const ReactionSchemaSrc = {
 }
 
 const AttachmentSchemaSrc = {
-  type: required(String),
+  type: required(Number),
   url: required(String),
   filename: required(String),
   width: Number,
@@ -21,26 +21,26 @@ const AttachmentSchemaSrc = {
   size: Number,
 }
 
-export const MessagePreviewSrc = {
-  type: required(String),
-  author: required(UserPreviewSchemaSrc),
-  content: required(String),
-}
-
 export const MessageSchemaSrc = {
-  type: required(String),
+  type: required(Number),
   content: required(String),
   channelId: required(String),
-  author: required(UserPreviewSchemaSrc),
-  reactions: required([ReactionSchemaSrc]),
-  attachments: required([AttachmentSchemaSrc]),
-  embeds: required([Object]),
-  mentions: required([UserPreviewSchemaSrc]),
-  pinned: required(Boolean),
-  mentionEveryone: required(Boolean),
+  author: required({
+    userId: required(String),
+    name: required(String),
+    avator: required(String),
+    profile: String,
+  }),
   timestamp: required(Date),
-  edited: required(Boolean),
-  refencedMessage: MessagePreviewSrc,
+
+  reactions: [ReactionSchemaSrc],
+  attachments: [AttachmentSchemaSrc],
+  embeds: [Object],
+  mentions: [UserPreviewSchemaSrc],
+  pinned: Boolean,
+  mentionEveryone: Boolean,
+  edited: Boolean,
+  referencedMessage: String,
 }
 
 export const MessageModel = model(
