@@ -1,5 +1,7 @@
 import type { TokenPayload } from '@emcord/types'
 
 export function getAuth(req: any) {
-  return req.auth as TokenPayload
+  const { userId, name, avator, profile } = req.auth
+
+  return { userId, name, avator, profile } as TokenPayload
 }

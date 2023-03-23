@@ -40,6 +40,9 @@ export function applyUser(router: Router) {
       const patchedUser = await UserModel.findByIdAndUpdate(
         userId, { name, avator, profile }, { new: true },
       )
+      if (!patchedUser)
+        throw new CustomError('INVALID_USER')
+
       ok(res, patchedUser)
     }
     catch (e: any) {

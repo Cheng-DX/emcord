@@ -1,5 +1,5 @@
 import type { Router } from 'express'
-import type { Message } from '@emcord/types'
+import type { Message, TokenPayload } from '@emcord/types'
 import { CustomError, err, getAuth, isValidMessage, ok } from '../../utils'
 import { ChannelModel, MessageModel } from '../../db/models'
 import { findServer } from './server'
@@ -7,7 +7,7 @@ import { findServer } from './server'
 export async function formatMsg(
   msg: Partial<Message>,
   channelId: string,
-  req: any,
+  auth: TokenPayload,
 ) {
   const {
     type,
@@ -26,13 +26,12 @@ export async function formatMsg(
 
   if (!isValidMessage(msg))
     throw new CustomError('INVALID_REQUEST', 'Your message is NOT valid')
-
-  const { userId, name, avator, profile } = getAuth(req)
   return {
     type,
     content,
     channelId,
-    author: { userId, name, avator, profile },
+    author: auth,
+
     timestamp: new Date(),
     reactions,
     attachments,
@@ -68,6 +67,12 @@ export async function findChannel(id: string, options?: {
   }
 }
 
+export async function sendMag(msg: Partial<Message>, channelId: string, auth: TokenPayload) {
+  const formattedMsg = await formatMsg(msg, channelId, auth)
+  const message = await MessageModel.create(formattedMsg)
+  return message
+}
+
 export function applyChannelMessage(router: Router) {
   router.get('/channels/:id/messages', async (req, res) => {
     const { id } = req.params
@@ -99,6 +104,8 @@ export function applyChannelMessage(router: Router) {
         userId,
       })
       const message = await MessageModel.findById(messageId)
+      if (!message)
+        throw new CustomError('INVALID_IDENTITY')
       ok(res, message)
     }
     catch (e: any) {
@@ -108,15 +115,55 @@ export function applyChannelMessage(router: Router) {
 
   router.post('/channels/:id/messages', async (req, res) => {
     const { id } = req.params
-    const { userId } = getAuth(req)
+    const auth = getAuth(req)
     const msg = req.body
     try {
       await findChannel(id, {
         premission: 'MEMBER',
-        userId,
+        userId: auth.userId,
       })
-      const formattedMsg = await formatMsg(msg, id, req)
-      const message = await MessageModel.create(formattedMsg)
+      const message = sendMag(msg, id, auth)
+      ok(res, message)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.patch('/channels/:id/messages/:messageId', async (req, res) => {
+    const { id, messageId } = req.params
+    const auth = getAuth(req)
+    const { content } = req.body
+    try {
+      await findChannel(id, {
+        premission: 'MEMBER',
+        userId: auth.userId,
+      })
+
+      const message = await MessageModel.findOneAndUpdate({
+        'id': messageId,
+        'author.userId': auth.userId,
+      }, { content, edited: true }, { new: true })
+      ok(res, message)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.delete('/channels/:id/messages/:messageId', async (req, res) => {
+    const { id, messageId } = req.params
+    const auth = getAuth(req)
+    try {
+      await findChannel(id, {
+        premission: 'MEMBER',
+        userId: auth.userId,
+      })
+
+      const message = await MessageModel.findOneAndDelete({
+        'id': messageId,
+        'author.userId': auth.userId,
+      }, { new: true })
       ok(res, message)
     }
     catch (e: any) {
