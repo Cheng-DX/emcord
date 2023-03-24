@@ -21,6 +21,13 @@ const AttachmentSchemaSrc = {
   size: Number,
 }
 
+const EmbedSchemaSrc = {
+  link: required(String),
+  title: required(String),
+  description: required(String),
+  image: String,
+}
+
 export const MessageSchemaSrc = {
   type: required(Number),
   content: required(String),
@@ -35,7 +42,7 @@ export const MessageSchemaSrc = {
 
   reactions: [ReactionSchemaSrc],
   attachments: [AttachmentSchemaSrc],
-  embeds: [Object],
+  embeds: [EmbedSchemaSrc],
   mentions: [UserPreviewSchemaSrc],
   pinned: Boolean,
   mentionEveryone: Boolean,

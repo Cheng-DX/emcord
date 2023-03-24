@@ -12,20 +12,41 @@ export async function formatMsg(
   const {
     type,
     content,
-    reactions = [],
     attachments = [],
     embeds = [],
-    mentions = [],
-    pinned = false,
-    mentionEveryone = false,
-    edited = false,
     referencedMessage,
   } = msg
   if (msg.type === undefined || !msg.content)
     throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
 
-  if (!isValidMessage(msg))
+  if (referencedMessage) {
+    const message = await MessageModel.findOne({
+      id: referencedMessage,
+      channelId,
+    })
+    if (!message)
+      throw new CustomError('DENIED', 'You can\'t reference a message that doesn\'t exist in this channel')
+  }
+
+  if (!isValidMessage({ type, content, attachments, embeds, referencedMessage }))
     throw new CustomError('INVALID_REQUEST', 'Your message is NOT valid')
+
+  // parse mentions
+  const mentions = content!.match(/<@(\w+)>/g)
+
+  const mentionedUsers = Array.from(
+    new Set(mentions?.map((mention) => mention.replace(/<@/, '').replace('>', '')) || []),
+  )
+  const mentionedUsersPreview = await UserModel
+    .find({
+      _id: {
+        $in: mentionedUsers,
+      },
+    })
+    .select('-servers')
+
+  const mentionEveryone = content!.includes('@everyone')
+
   return {
     type,
     content,
@@ -33,14 +54,14 @@ export async function formatMsg(
     author: auth,
 
     timestamp: new Date(),
-    reactions,
+    reactions: [],
     attachments,
     embeds,
-    mentions,
-    pinned,
+    mentions: mentionedUsersPreview,
+    pinned: false,
     mentionEveryone,
-    edited,
-    referencedMessage,
+    edited: false,
+    referencedMessage: '',
   }
 }
 
@@ -137,17 +158,31 @@ export function applyChannelMessage(router: Router) {
   router.patch('/channels/:id/messages/:messageId', async (req, res) => {
     const { id, messageId } = req.params
     const auth = getAuth(req)
-    const { content } = req.body
+    const msg = req.body
     try {
       await findChannel(id, {
         premission: 'MEMBER',
         userId: auth.userId,
       })
 
+      const {
+        content,
+        attachments,
+        embeds,
+        mentions,
+        mentionEveryone,
+      } = await formatMsg(msg, id, auth)
+
       const message = await MessageModel.findOneAndUpdate({
         'id': messageId,
         'author.userId': auth.userId,
-      }, { content, edited: true }, { new: true })
+      }, {
+        content,
+        attachments,
+        embeds,
+        mentions,
+        mentionEveryone,
+      }, { new: true })
       ok(res, message)
     }
     catch (e: any) {
@@ -360,7 +395,7 @@ export function applyChannelReactions(router: Router) {
         throw new CustomError('DENIED', 'No reaction with this emoji')
 
       const users = await UserModel.find({
-        id: {
+        _id: {
           $in: usersId,
         },
       })
