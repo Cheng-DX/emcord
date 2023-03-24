@@ -40,6 +40,7 @@ export const server: Route[] = [
   },
 
   // message reactions
+
   // own reactions
   {
     description: 'Add own reaction to a message',
@@ -51,26 +52,27 @@ export const server: Route[] = [
     path: '/channels/:id/messages/:messageId/reactions/:emoji/@me',
     method: 'delete',
   },
-
-  // other reactions (requires manage messages)
-  {
-    description: 'Remove a user\'s reaction from a message',
-    path: '/channels/:id/messages/:messageId/reactions/:emoji/:userId',
-    method: 'delete',
-  },
+  // reaction list
   {
     description: 'Get a list of users that reacted with this emoji',
     path: '/channels/:id/messages/:messageId/reactions/:emoji',
     method: 'get',
   },
-  {
-    description: 'Delete all reactions on a message',
-    path: '/channels/:id/messages/:messageId/reactions',
-    method: 'delete',
-  },
-  {
-    description: 'Delete all reactions for a given emoji on a message',
-    path: '/channels/:id/messages/:messageId/reactions/:emoji',
-    method: 'delete',
-  },
+
+  // other reactions (requires manage permission)
+  // {
+  //   description: 'Remove a user\'s reaction from a message',
+  //   path: '/channels/:id/messages/:messageId/reactions/:emoji/:userId',
+  //   method: 'delete',
+  // },
+  // {
+  //   description: 'Delete all reactions on a message',
+  //   path: '/channels/:id/messages/:messageId/reactions',
+  //   method: 'delete',
+  // },
+  // {
+  //   description: 'Delete all reactions for a given emoji on a message',
+  //   path: '/channels/:id/messages/:messageId/reactions/:emoji',
+  //   method: 'delete',
+  // },
 ]

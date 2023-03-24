@@ -1,4 +1,4 @@
-import type { Attachment, Embed, Message } from '@emcord/types'
+import type { Attachment, Embed, EmojiReaction, Message } from '@emcord/types'
 
 export const errorMap = {
   INVALID_USER: 'has valid token but userid is invalid',
@@ -91,4 +91,13 @@ export function isValidMessage(msg: Partial<Message>) {
     default:
       return false
   }
+}
+
+export function isvalidReaction(reaction: Partial<EmojiReaction>) {
+  return reaction.emoji
+      && reaction.emoji.id
+      && reaction.emoji.name
+      && typeof reaction.count === 'number'
+      && Array.isArray(reaction.users)
+      && reaction.users.every((id) => typeof id === 'string')
 }

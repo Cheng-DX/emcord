@@ -35,7 +35,7 @@ export interface Server {
   description?: string
 }
 
-interface EmojiReaction {
+export interface EmojiReaction {
   emoji: {
     id: string
     name: string
@@ -57,6 +57,7 @@ export type MessageType = 0 | 1 | 2 | 3
 // 'NORMAL' | 'ATTACH' | 'LINK' | 'MARKDOWN'
 
 export interface Embed {
+  link: string
   title: string
   description: string
   image?: string

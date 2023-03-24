@@ -3,6 +3,7 @@ import {
   applyAuth,
   applyChannelMessage,
   applyChannelPins,
+  applyChannelReactions,
   applyServer,
   applyServerChannels,
   applyServerMembers,
@@ -17,6 +18,7 @@ applyServerChannels(router)
 applyServerMembers(router)
 applyChannelMessage(router)
 applyChannelPins(router)
+applyChannelReactions(router)
 
 router.all('/*', (_req, res) => {
   res.status(404).json({

@@ -4,10 +4,10 @@ import { UserPreviewSchemaSrc } from './user'
 import { required } from './utils'
 
 const ReactionSchemaSrc = {
-  emoji: {
+  emoji: required({
     id: required(String),
     name: required(String),
-  },
+  }),
   count: required(Number),
   users: required([String]),
 }
