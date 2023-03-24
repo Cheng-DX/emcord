@@ -126,7 +126,7 @@ export function applyChannelMessage(router: Router) {
         premission: 'MEMBER',
         userId: auth.userId,
       })
-      const message = sendMag(msg, id, auth)
+      const message = await sendMag(msg, id, auth)
       ok(res, message)
     }
     catch (e: any) {
