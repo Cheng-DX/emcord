@@ -22,7 +22,7 @@ applyChannelReactions(router)
 
 router.all('/*', (_req, res) => {
   res.status(404).json({
-    message: 'Wrong api',
+    message: 'Opps, this path does not exist',
   })
 })
 
