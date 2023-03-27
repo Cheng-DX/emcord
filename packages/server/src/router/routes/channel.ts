@@ -18,6 +18,9 @@ export function applyChannelMessage(router: Router) {
           channelId: id,
         })
         .limit(Number(limit))
+        .sort({
+          timestamp: -1,
+        })
       ok(res, messages)
     }
     catch (e: any) {

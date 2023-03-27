@@ -1,5 +1,6 @@
 import { type Socket, io } from 'socket.io-client'
 import consola from 'consola'
+import type { Message } from '@emcord/types'
 
 const URL = 'http://localhost:9527'
 
@@ -7,7 +8,7 @@ export function useSocket() {
   const [connected, toggle] = useToggle(false)
   const { token } = useToken()
   const socket = ref<Socket>()
-  const messages = ref<any[]>([])
+  const messages = ref<Message[]>([])
 
   watch(token, (newToken) => {
     if (!connected.value) {

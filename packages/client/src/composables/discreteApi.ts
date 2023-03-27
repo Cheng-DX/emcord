@@ -14,6 +14,13 @@ const {
   configProviderProps: {
     theme: darkTheme,
   },
+  messageProviderProps: {
+    placement: 'bottom-right',
+  },
+  notificationProviderProps: {
+    placement: 'bottom-right',
+    max: 1,
+  },
 })
 
 function openDialog(content: string | (() => VNode), options: DialogOptions = {}) {

@@ -13,6 +13,8 @@ const wss = new Server({
   },
 })
 
+export const onlineUsers = new Set<string>()
+
 function useAuth() {
   const info = {
     authed: false,
@@ -51,11 +53,17 @@ wss.on('connection', (socket) => {
       await verifyAuth(token)
       const { servers } = info.user!
       socket.join(servers)
+      onlineUsers.add(info.user!.id)
       consola.success('join', servers, info.user!.name)
     }
     catch (e: any) {
       consola.success(e)
     }
+  })
+
+  socket.on('disconnect', () => {
+    if (info.authed)
+      onlineUsers.delete(info.auth!.userId)
   })
 
   socket.on('send', async (msg, serverId, channelId) => {

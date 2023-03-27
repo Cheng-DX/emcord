@@ -3,8 +3,7 @@ import { CustomError, err, getAuth, isValidChannelType, ok } from '../../utils'
 import { ChannelModel, ServerModel, UserModel } from '../../db/models'
 import { findServer, getServerPreview } from '../modules/server'
 import { findUser } from '../modules/user'
-
-const onlineUsers = new Set<string>(['6419c86ab3579ba46271444d'])
+import { onlineUsers } from '../../ws/wsio'
 
 export function applyServer(router: Router) {
   router.post('/servers', async (req, res) => {

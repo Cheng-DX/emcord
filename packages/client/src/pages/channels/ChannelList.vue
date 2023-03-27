@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { Channel, Server } from '@emcord/types'
+import ChannelBar from '~/components/ChannelBar.vue'
 
 const props = defineProps<{
-  serverId: string | string[]
+  serverId: string
 }>()
 
 const { data: server } = useFetch(
@@ -31,28 +32,14 @@ const { data: channels } = useFetch(
       s-25px
     />
   </header>
-  <div bgc-2b2d30 h-full>
+  <div bgc-2b2d30 style="height: calc(100% - 55px)">
     <div h-30px flex items-center justify-between class="channel">
-      <div flex items-center>
-        <img
-          src="https://api.iconify.design/prime:hashtag.svg?color=%23ffffff"
-          draggable="false"
-          s-25px
-          font-bold
-          mr-10px
-        >
-        <div>
-          <router-link
-            v-for="channel in channels"
-            :key="channel.id"
-            :to="`/channels/${serverId}/${channel.id}`"
-            c-text-3
-          >
-            {{ channel.name }}
-          </router-link>
-        </div>
-      </div>
-      <div i-carbon-add />
+      <ChannelBar
+        v-for="channel in channels"
+        :key="channel.id"
+        :channel="channel"
+        :server-id="serverId"
+      />
     </div>
   </div>
 </template>

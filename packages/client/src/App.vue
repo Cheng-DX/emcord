@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme, dateZhCN, zhCN } from 'naive-ui'
+import {
+  NConfigProvider,
+  NDialogProvider,
+  NMessageProvider,
+  darkTheme,
+} from 'naive-ui'
 </script>
 
 <template>
   <NConfigProvider
     :theme="darkTheme"
-    :locale="zhCN"
-    :date-locale="dateZhCN"
-    inline-theme-disabled
-    h-screen c-text-2
+    h-screen
+    c-text-2
   >
     <NDialogProvider>
-      <NMessageProvider>
-        <router-view id="router-view" />
+      <NMessageProvider style="height: auto;" placement="bottom-right">
+        <div>
+          <router-view id="router-view" />
+        </div>
       </NMessageProvider>
     </NDialogProvider>
   </NConfigProvider>
@@ -21,7 +26,6 @@ import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme, dateZhCN
 <style>
 :root {
   font-family: PingFang SC;
-  overflow: hidden;
   color-scheme: dark;
 }
 </style>
