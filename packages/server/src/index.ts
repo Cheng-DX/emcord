@@ -5,6 +5,7 @@ import { expressjwt } from 'express-jwt'
 import { secretKey } from './consts'
 import { router } from './router'
 import { initWSS } from './ws'
+import './ws/wsio'
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/emcord')
@@ -28,7 +29,6 @@ app.use(
   }),
 )
 
-// @ts-expect-error token
 app.use((err, _req, res, _next) => {
   if (err.name === 'UnauthorizedError') {
     return res.send({
@@ -43,7 +43,6 @@ app.use((err, _req, res, _next) => {
 })
 
 app.use('/api', router)
-initWSS('/api/ws/channel', 9527)
 app.listen(3000, () => {
   consola.success('Server started at port 3000')
 })

@@ -16,7 +16,7 @@ const {
   },
 })
 
-function openDialog(content: string | (() => VNode), options: DialogOptions) {
+function openDialog(content: string | (() => VNode), options: DialogOptions = {}) {
   dialog.create({
     content,
     closable: false,

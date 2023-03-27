@@ -8,12 +8,11 @@ import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme, dateZhCN
     :locale="zhCN"
     :date-locale="dateZhCN"
     inline-theme-disabled
+    h-screen c-text-2
   >
     <NDialogProvider>
       <NMessageProvider>
-        <div h-full c-text-2>
-          <router-view />
-        </div>
+        <router-view id="router-view" />
       </NMessageProvider>
     </NDialogProvider>
   </NConfigProvider>
@@ -22,6 +21,7 @@ import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme, dateZhCN
 <style>
 :root {
   font-family: PingFang SC;
-  overflow: scroll;
+  overflow: hidden;
+  color-scheme: dark;
 }
 </style>

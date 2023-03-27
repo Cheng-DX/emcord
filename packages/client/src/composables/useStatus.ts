@@ -1,4 +1,4 @@
-import type { ComputedRef, Ref } from 'vue'
+import type { Ref } from 'vue'
 
 export function useStatus<R extends string, T extends R[]>(
   options: T,
@@ -6,7 +6,7 @@ export function useStatus<R extends string, T extends R[]>(
 ) {
   const status = ref(initValue) as Ref<T[number]>
 
-  const r: Record<Prefix<R, 'is'>, ComputedRef<boolean>> = {} as any
+  const r = {}
 
   return {
     status,
@@ -15,4 +15,3 @@ export function useStatus<R extends string, T extends R[]>(
   }
 }
 
-type Prefix<T extends string, P extends string> = `${P}${T}`

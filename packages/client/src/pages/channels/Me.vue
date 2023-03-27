@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import '~/composables/useSocket'
 const { userInfo } = useUserInfo()
 </script>
 
 <template>
-  <pre>
-    {{ userInfo }}
-  </pre>
+  <div>{{ userInfo }}</div>
 </template>
 
 <style scoped>

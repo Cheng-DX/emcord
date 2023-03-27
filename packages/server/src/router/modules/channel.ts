@@ -1,78 +1,98 @@
-import type { Route } from './types'
+import type { Message, TokenPayload } from '@emcord/types'
+import { CustomError, isValidMessage } from '../../utils'
+import { ChannelModel, MessageModel, UserModel } from '../../db/models'
+import { findServer } from './server'
 
-export const server: Route[] = [
-  // channel messages
-  {
-    path: '/channels/:id/messages',
-    method: 'get',
-  },
-  {
-    path: '/channels/:id/messages/:messageId',
-    method: 'get',
-  },
-  {
-    path: '/channels/:id/messages',
-    method: 'post',
-  },
-  {
-    path: '/channels/:id/messages/:messageId',
-    method: 'patch',
-  },
-  {
-    path: '/channels/:id/messages/:messageId',
-    method: 'delete',
-  },
+export async function findChannel(id: string, options?: {
+  premission?: 'OWNER' | 'MEMBER' | 'MANAGER'
+  userId: string
+}) {
+  const { premission = false, userId = '' } = options || {}
 
-  // Pins
-  {
-    path: '/channels/:id/pins',
-    method: 'get',
-    description: 'Get all pins in a channel',
-  },
-  {
-    path: '/channels/:id/pins/:messageId',
-    method: 'put',
-  },
-  {
-    description: 'Unpin a message in a channel',
-    path: '/channels/:id/pins/:messageId',
-    method: 'delete',
-  },
+  const channel = await ChannelModel.findById(id)
+  if (!channel)
+    throw new CustomError('INVALID_IDENTITY')
+  const server = await findServer(channel.serverId)
 
-  // message reactions
+  if (premission === 'MEMBER' && !server.members.includes(userId))
+    throw new CustomError('PERMISSION_DENIED', 'You need a MEMBER permission to send a message in this channel')
 
-  // own reactions
-  {
-    description: 'Add own reaction to a message',
-    path: '/channels/:id/messages/:messageId/reactions/:emoji/@me',
-    method: 'put',
-  },
-  {
-    description: 'Remove own reaction from a message',
-    path: '/channels/:id/messages/:messageId/reactions/:emoji/@me',
-    method: 'delete',
-  },
-  // reaction list
-  {
-    description: 'Get a list of users that reacted with this emoji',
-    path: '/channels/:id/messages/:messageId/reactions/:emoji',
-    method: 'get',
-  },
+  if (premission === 'OWNER' && server.owner._id !== userId)
+    throw new CustomError('PERMISSION_DENIED', 'You need an OWNER permission to send a message in this channel')
 
-  // other reactions (requires manage permission)
-  // {
-  //   description: 'Remove a user\'s reaction from a message',
-  //   path: '/channels/:id/messages/:messageId/reactions/:emoji/:userId',
-  //   method: 'delete',
-  // },
-  // {
-  //   description: 'Delete all reactions on a message',
-  //   path: '/channels/:id/messages/:messageId/reactions',
-  //   method: 'delete',
-  // },
-  // {
-  //   description: 'Delete all reactions for a given emoji on a message',
-  //   path: '/channels/:id/messages/:messageId/reactions/:emoji',
-  //   method: 'delete',
-  // },
-]
+  // TODO: MANAGER should use a different permission system
+  if (premission === 'MANAGER' && server.owner._id !== userId)
+    throw new CustomError('PERMISSION_DENIED', 'You need an OWNER permission to send a message in this channel')
+
+  return {
+    channel,
+    server,
+  }
+}
+
+export async function formatMsg(
+  msg: Partial<Message>,
+  channelId: string,
+  auth: TokenPayload,
+) {
+  const {
+    type,
+    content,
+    attachments = [],
+    embeds = [],
+    referencedMessage,
+  } = msg
+  if (msg.type === undefined || !msg.content)
+    throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
+
+  if (referencedMessage) {
+    const message = await MessageModel.findOne({
+      id: referencedMessage,
+      channelId,
+    })
+    if (!message)
+      throw new CustomError('DENIED', 'You can\'t reference a message that doesn\'t exist in this channel')
+  }
+
+  if (!isValidMessage({ type, content, attachments, embeds, referencedMessage }))
+    throw new CustomError('INVALID_REQUEST', 'Your message is NOT valid')
+
+  // parse mentions
+  const mentions = content!.match(/<@(\w+)>/g)
+
+  const mentionedUsers = Array.from(
+    new Set(mentions?.map((mention) => mention.replace(/<@/, '').replace('>', '')) || []),
+  )
+  const mentionedUsersPreview = await UserModel
+    .find({
+      _id: {
+        $in: mentionedUsers,
+      },
+    })
+    .select('-servers')
+
+  const mentionEveryone = content!.includes('@everyone')
+
+  return {
+    type,
+    content,
+    channelId,
+    author: auth,
+
+    timestamp: new Date(),
+    reactions: [],
+    attachments,
+    embeds,
+    mentions: mentionedUsersPreview,
+    pinned: false,
+    mentionEveryone,
+    edited: false,
+    referencedMessage: '',
+  }
+}
+
+export async function sendMsg(msg: Partial<Message>, channelId: string, auth: TokenPayload) {
+  const formattedMsg = await formatMsg(msg, channelId, auth)
+  const message = await MessageModel.create(formattedMsg)
+  return message
+}

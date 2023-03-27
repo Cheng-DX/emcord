@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": [
+      "ESNext",
+    ],
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "@emcord/types": [
+        "../types/src/index.ts"
+      ]
+    }
+  },
+}

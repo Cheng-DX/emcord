@@ -27,7 +27,6 @@ export default defineConfig({
     ],
     ['btn-text',
       {
-        'margin': '0 auto',
         'white-space': 'nowrap',
         'text-overflow': 'ellipsis',
         'font-weight': 700,

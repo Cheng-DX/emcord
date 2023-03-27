@@ -1,72 +1,41 @@
 <script setup lang="ts">
-import { isOK } from '@emcord/types'
-import type { WSMessage, WSMessageOK } from '@emcord/types'
+import { NInput } from 'naive-ui'
 import ChannelList from './ChannelList.vue'
 
 const { params } = toRefs(useRoute())
-const { token } = useToken()
-const { userInfo, userOverview } = useUserInfo()
 
-const { data, send, status } = useWebSocket<string>(
-  () => `ws://localhost:9527/api/ws/channel?token=${token.value}`,
-)
-const all = ref<any[]>([])
-const history = useLocalStorage<WSMessageOK[]>(
-  `history-${params.value.channelId}-${userInfo.value?.id}`,
-  [],
-  { mergeDefaults: true },
-)
+const { connected, messages, sendText, socket } = useSocket()
+const msg = ref('')
 
-watch(data, message => {
-  if (message) {
-    const msg = JSON.parse(message) as WSMessage
-    all.value.push(msg)
-    if (isOK(msg))
-      history.value.push(msg)
+function send() {
+  if (msg.value) {
+    sendText(
+      params.value.serverId as string,
+      params.value.channelId as string,
+      msg.value,
+    )
   }
-}, {
-  immediate: true,
-})
-
-const inputValue = ref('')
-function submit() {
-  send(JSON.stringify({
-    from: userOverview.value,
-    content: inputValue.value,
-    time: new Date(),
-    channelId: params.value.channelId,
-    serverId: params.value.serverId,
-  }))
 }
 </script>
 
 <template>
-  <div flex h-full>
-    <aside w-240px h-full bgc-2b2d30>
-      <ChannelList :server-id="params.serverId" :connected="status === 'OPEN'" />
+  <div flex flex-row h-full>
+    <aside w-240px>
+      <ChannelList :server-id="params.serverId" />
     </aside>
-    <div flex-col>
-      <div>
-        {{ params.channelId }} in {{ params.serverId }}
-      </div>
-      <input v-model="inputValue">
-      <button btn @click="submit()">
-        SEND
-      </button>
-      {{ status }}
+    <main flex-1 scroll-y>
+      <h3>
+        {{ params }} :
+        {{ connected }}
+      </h3>
+      <pre>{{ messages }}</pre>
       <div flex>
-        <div wp-50>
-          <pre v-for="(h, i) in history" :key="i">
-            {{ h.data?.content }}
-          </pre>
-        </div>
-        <div wp-50>
-          <pre v-for="(h, i) in all" :key="i">
-            {{ h.data?.content || h.message }}
-          </pre>
+        <NInput v-model:value="msg" w-100px style="width: 200px" />
+        <div btn-primary h-33px w-90px ml-10px @click="send()">
+          Send
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 

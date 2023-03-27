@@ -1,52 +1,10 @@
 import type { Router } from 'express'
-import type { ServerPreview } from '@emcord/types'
 import { CustomError, err, getAuth, isValidChannelType, ok } from '../../utils'
 import { ChannelModel, ServerModel, UserModel } from '../../db/models'
-import { findUser } from './user'
+import { findServer, getServerPreview } from '../modules/server'
+import { findUser } from '../modules/user'
 
-export async function getServerPreview(id: string, query?: {
-  memberLimit?: number
-  channelLimit?: number
-}) {
-  const { memberLimit = 1, channelLimit = 1 } = query || {}
-  const server = await findServer(id)
-  const membersPreview: any = await UserModel
-    .find({
-      _id: { $in: server.members },
-    })
-    .limit(Number(memberLimit))
-    .select('-servers')
-
-  const channelsPreview: any = await ChannelModel
-    .find({
-      _id: { $in: server.channels },
-    })
-    .limit(Number(channelLimit))
-
-  const serverPreview: ServerPreview = {
-    ...server.toObject(),
-    membersPreview,
-    channelsPreview,
-  }
-
-  return serverPreview
-}
-
-export async function findServer(id: string, options?: {
-  premission?: boolean
-  userId: string
-}) {
-  const { premission = false, userId = '' } = options || {}
-  const server = await ServerModel.findById(id)
-  if (!server)
-    throw new CustomError('INVALID_IDENTITY')
-
-  if (premission && server.owner._id !== userId)
-    throw new CustomError('PERMISSION_DENIED')
-
-  else
-    return server as any
-}
+const onlineUsers = new Set<string>(['6419c86ab3579ba46271444d'])
 
 export function applyServer(router: Router) {
   router.post('/servers', async (req, res) => {
@@ -281,6 +239,15 @@ export function applyServerMembers(router: Router) {
         return
       }
 
+      const user = await UserModel.findByIdAndUpdate(userId, {
+        $push: {
+          servers: id,
+        },
+      }, { new: true })
+
+      if (!user)
+        throw new CustomError('INVALID_IDENTITY')
+
       await ServerModel.findByIdAndUpdate(id, {
         $push: {
           members: userId,
@@ -288,6 +255,7 @@ export function applyServerMembers(router: Router) {
       }, {
         new: true,
       })
+
       ok(res, getServerPreview(id, {
         memberLimit: Number.NaN,
       }))
@@ -307,6 +275,15 @@ export function applyServerMembers(router: Router) {
         premission: true,
         userId: authUserId,
       })
+
+      const user = await UserModel.findByIdAndUpdate(userId, {
+        $pull: {
+          servers: id,
+        },
+      }, { new: true })
+      if (!user)
+        throw new CustomError('INVALID_IDENTITY')
+
       const server = await ServerModel.findByIdAndUpdate(id, {
         $pull: {
           members: userId,
@@ -315,6 +292,23 @@ export function applyServerMembers(router: Router) {
         new: true,
       })
       ok(res, server)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
+  router.get('/servers/:id/members/online', async (req, res) => {
+    const { id } = req.params
+    const { limit = 1 } = req.query
+    try {
+      const { membersPreview } = await getServerPreview(id, {
+        memberLimit: Number(limit) as number,
+      })
+      const onlineMembersPreview = membersPreview
+        .filter((member) => onlineUsers.has(member.id))
+
+      return ok(res, onlineMembersPreview)
     }
     catch (e: any) {
       err(res, e)

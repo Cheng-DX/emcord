@@ -3,8 +3,8 @@ import ServerList from './ServerList.vue'
 </script>
 
 <template>
-  <div min-h-screen flex flex-row>
-    <div w-72px bgc-1e1f22>
+  <div id="container" min-h-screen h-full flex flex-row>
+    <div w-72px bgc-1e1f22 h-screen>
       <ServerList />
     </div>
     <div flex-1 bgc-313338>

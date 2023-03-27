@@ -1,22 +1,17 @@
 <script setup lang="ts">
+import type { Server } from '@emcord/types'
 import ServerButton from '~/components/ServerButton.vue'
 import Spliter from '~/components/Spliter.vue'
-import { dialog } from '~/composables/discreteApi'
+import { openDialog } from '~/composables/discreteApi'
 import AddServer from '~/components/AddServer.vue'
 
-const { userInfo } = useUserInfo()
 const route = useRoute()
-const servers = computed(() => userInfo.value?.servers || [])
+const { data: servers } = useFetch('/api/users/@me/servers?limit=10', {
+  method: 'get',
+}).json<Server[]>()
 
 function addServer() {
-  dialog.create({
-    content: () => h(AddServer),
-    closable: false,
-    showIcon: false,
-    title: () => h('strong', { style: { margin: 'auto', fontSize: '20px', padding: '10px' } }, '自定义您的服务器'),
-    style: { padding: '0' },
-    transformOrigin: 'center',
-  })
+  openDialog(() => h(AddServer))
 }
 </script>
 
@@ -46,6 +41,7 @@ function addServer() {
       name="add"
       avator="https://api.iconify.design/ic:sharp-add-circle.svg?color=%23ffffff"
       :active="true"
+      :hidden-bar="true"
       @click="addServer()"
     />
   </div>

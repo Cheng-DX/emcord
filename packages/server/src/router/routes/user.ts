@@ -1,14 +1,7 @@
 import type { Router } from 'express'
 import { ServerModel, UserModel } from '../../db/models'
 import { CustomError, err, getAuth, ok } from '../../utils'
-
-export async function findUser(id: string) {
-  const result = await UserModel.findById(id)
-  if (!result)
-    throw new CustomError('INVALID_USER')
-  else
-    return result
-}
+import { findUser } from '../modules/user'
 
 export function applyUser(router: Router) {
   router.get('/users/@me', async (req, res) => {

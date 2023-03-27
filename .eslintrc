@@ -1,7 +1,8 @@
 {
   "extends": "@antfu",
   "rules": {
-    "arrow-parens": "off"
+    "arrow-parens": "off",
+    "prefer-const": "off"
   },
   "ignorePatterns": "docs/"
 }
