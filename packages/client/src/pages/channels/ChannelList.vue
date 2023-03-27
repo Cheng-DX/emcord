@@ -2,26 +2,15 @@
 import type { Channel, Server } from '@emcord/types'
 import ChannelBar from '~/components/ChannelBar.vue'
 
-const props = defineProps<{
-  serverId: string
+defineProps<{
+  channels: Channel[] | null
+  server: Server | null
 }>()
-
-const { data: server } = useFetch(
-  () => `/api/servers/${props.serverId}`, {
-    refetch: true,
-  },
-).json<Server>()
-
-const { data: channels } = useFetch(
-  () => `/api/servers/${props.serverId}/channels`, {
-    refetch: true,
-  },
-).json<Channel[]>()
 </script>
 
 <template>
-  <header h-30px p-3 flex items-center justify-between class="the-header" bgc-2b2d30>
-    <div flex items-center>
+  <header h-24px p-3 flex items-center justify-between class="the-header" bgc-2b2d30>
+    <div flex items-center c-text-0>
       <strong>
         {{ server?.name }}
       </strong>
@@ -29,16 +18,16 @@ const { data: channels } = useFetch(
     <div
       cursor-pointer
       i-ic-baseline-keyboard-arrow-down
-      s-25px
+      s-22px
     />
   </header>
-  <div bgc-2b2d30 style="height: calc(100% - 55px)">
+  <div bgc-2b2d30 style="height: calc(100% - 49px)">
     <div h-30px flex items-center justify-between class="channel">
       <ChannelBar
         v-for="channel in channels"
         :key="channel.id"
         :channel="channel"
-        :server-id="serverId"
+        :server-id="server?.id"
       />
     </div>
   </div>

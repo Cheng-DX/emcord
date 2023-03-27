@@ -19,8 +19,12 @@ export const routes: RouteRecordRaw[] = [
     path: '/channels',
     component: TheContainer,
     children: [{
-      path: ':serverId/:channelId',
-      component: () => import('~/pages/channels/index.vue'),
+      path: ':serverId',
+      component: () => import('~/pages/channels/ChannelContainer.vue'),
+      children: [{
+        path: ':channelId',
+        component: () => import('~/pages/channels/ChannelMain.vue'),
+      }],
     }, {
       path: '@me',
       component: () => import('~/pages/channels/Me.vue'),

@@ -9,20 +9,21 @@ const { id, author, content, timestamp } = toRefs(props.message)
 </script>
 
 <template>
-  <div wp-100 mt-5px mb-5px flex>
+  <div mt-5px mb-5px flex class="card">
     <aside w-50px>
       <img
         :src="author.avator"
         draggable="false"
-        s-48px
+        s-40px
         cursor-pointer
+        r-50
       >
     </aside>
     <main class="message-body">
       <div flex items-baseline>
-        <a text-16px font-700>
+        <span text-16px font-500 style="line-height: 0.85em">
           {{ author.name }}
-        </a>
+        </span>
         <span
           ml-10px
           text-12px
@@ -33,7 +34,7 @@ const { id, author, content, timestamp } = toRefs(props.message)
           {{ new Date(timestamp).toLocaleTimeString() }}
         </span>
       </div>
-      <div>
+      <div class="text">
         {{ content }}
       </div>
     </main>
@@ -41,5 +42,17 @@ const { id, author, content, timestamp } = toRefs(props.message)
 </template>
 
 <style scoped>
-
+.card {
+  padding: 2px 48px 2px 20px;
+  margin-top: 17px;
+}
+.message-body {
+  margin-left: 16px;
+}
+.text {
+  width: calc(100vw - 240px - 72px - 48px - 85px);
+  line-height: 1.5rem;
+  word-wrap: break-word;
+  user-select: text;
+}
 </style>

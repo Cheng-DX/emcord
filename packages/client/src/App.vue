@@ -27,5 +27,6 @@ import {
 :root {
   font-family: PingFang SC;
   color-scheme: dark;
+  user-select: none;
 }
 </style>

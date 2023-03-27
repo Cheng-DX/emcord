@@ -2,7 +2,7 @@
 import type { Channel } from '@emcord/types'
 
 defineProps<{
-  serverId: string
+  serverId?: string
   channel: Channel
 }>()
 
