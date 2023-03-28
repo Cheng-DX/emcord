@@ -24,7 +24,7 @@ const {
 })
 
 function openDialog(content: string | (() => VNode), options: DialogOptions = {}) {
-  dialog.create({
+  const ins = dialog.create({
     content,
     closable: false,
     showIcon: false,
@@ -33,6 +33,8 @@ function openDialog(content: string | (() => VNode), options: DialogOptions = {}
 
     ...options,
   })
+
+  return ins
 }
 
 export {

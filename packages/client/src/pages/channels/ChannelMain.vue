@@ -22,7 +22,7 @@ const msg = ref('')
 
 const message = useMessage()
 const { data } = useFetch(
-  () => `/api/channels/${params.value.channelId}/messages?limit=10`, {
+  () => `/api/channels/${params.value.channelId}/messages?limit=100`, {
     refetch: true,
   },
 ).json<Message[]>()

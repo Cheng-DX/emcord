@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { NButton, NFormItem, NInput, NSwitch, NUpload } from 'naive-ui'
+import type { Channel } from '@emcord/types'
+import { NInput, NSwitch } from 'naive-ui'
 
 const props = defineProps<{
   serverId?: string
+}>()
+
+const emits = defineEmits<{
+  (e: 'close', channel?: Channel): void
 }>()
 
 const channelName = ref('')
@@ -11,7 +16,7 @@ async function createChannel() {
   if (!channelName.value || !props.serverId)
     return
   try {
-    await useFetch(`/api/servers/${props.serverId}/channels`, {
+    const { data: channel } = await useFetch(`/api/servers/${props.serverId}/channels`, {
       method: 'POST',
       body: JSON.stringify({
         name: channelName.value,
@@ -21,7 +26,8 @@ async function createChannel() {
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+    }).json<Channel>()
+    emits('close', channel.value!)
   }
   catch (e) {
     console.error(e)
@@ -36,7 +42,7 @@ async function createChannel() {
         <div font-bold text-20px>
           创建频道
         </div>
-        <div i-ic-round-close s-27px c-change-3 cursor-pointer />
+        <div i-ic-round-close s-27px c-change-3 cursor-pointer @click="() => emits('close')" />
       </div>
       <div>
         <div text-3 font-700 mb-4px>

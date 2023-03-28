@@ -55,6 +55,7 @@ export default defineConfig({
     [/^hp-(\d+)$/, ([, d]) => ({ height: `${d}%` })],
     [/^r-(\d+)$/, ([, d]) => ({ 'border-radius': `${d}px` })],
     [/^bgc-([0-9a-zA-z]+)$/, ([, s]) => ({ 'background-color': `#${s}` })],
+    [/^c-([0-9a-zA-z]+)$/, ([, s]) => ({ color: `#${s}` })],
     [/^s-(\w+)$/, ([, w]) => ({ height: w, width: w })],
   ],
   presets: [
@@ -67,6 +68,7 @@ export default defineConfig({
         carbon: () =>
           import('@iconify-json/carbon/icons.json').then(i => i.default as any),
         ic: () => import('@iconify-json/ic/icons.json').then(i => i.default as any),
+        heroicons: () => import('@iconify-json/heroicons/icons.json').then(i => i.default as any),
       },
     }),
     presetWebFonts({

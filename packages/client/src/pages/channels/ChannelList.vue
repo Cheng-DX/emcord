@@ -12,13 +12,23 @@ const props = defineProps<{
   server: Server | null
 }>()
 
-const [menu, toggleMenu] = useToggle(false)
-const menus: Option[] = [{
+const emits = defineEmits<{
+  (e: 'reload'): void
+}>()
+const [serverMenu, toggleServerMenu] = useToggle(false)
+const serverMenuOptions: Option[] = [{
   label: '新建频道',
   icon: 'i-ic-round-reviews',
   onClick: () => {
-    openDialog(() => h(AddChannel, {
+    toggleServerMenu(false)
+    const dialog = openDialog(() => h(AddChannel, {
       serverId: props.server?.id,
+      onClose: (channel) => {
+        if (channel)
+          emits('reload')
+
+        dialog.destroy()
+      },
     }))
   },
   value: 'create-channel',
@@ -32,11 +42,42 @@ const menus: Option[] = [{
   value: 'server-settings',
   type: 'primary',
 }]
+
+const [channelMenu, toggleChannelMenu] = useToggle(false)
+const channelMenuPosition = reactive({
+  x: 0,
+  y: 0,
+})
+
+const clickedChannel = ref<Channel | null>(null)
+const channelMenuOptions: Option[] = [{
+  label: '频道设置',
+  icon: 'i-ic-round-settings',
+  onClick: () => {
+  },
+  value: 'create-channel',
+  type: 'primary',
+  color: 'green',
+}, {
+  label: '复制ID',
+  icon: 'i-carbon-checkmark-filled',
+  onClick: () => {
+  },
+  value: 'copy-id',
+  type: 'primary',
+}]
+function openChannelMenu(e: MouseEvent, channel: Channel) {
+  e.preventDefault()
+  channelMenuPosition.x = e.clientX
+  channelMenuPosition.y = e.clientY
+  toggleChannelMenu(true)
+  clickedChannel.value = channel
+}
 </script>
 
 <template>
   <NPopover
-    trigger="manual" :show="menu" :show-arrow="false" :style="{
+    trigger="manual" :show="serverMenu" :show-arrow="false" :style="{
       width: '200px',
       padding: '6px 8px',
       background: '#111214',
@@ -46,7 +87,7 @@ const menus: Option[] = [{
       <header
         h-24px p-3 flex items-center justify-between class="the-header"
         bgc-2b2d30 hover:bgc-35373d transition cursor-pointer
-        @click="toggleMenu(!menu)"
+        @click="toggleServerMenu(!serverMenu)"
       >
         <div flex items-center c-text-0>
           <strong>
@@ -56,24 +97,44 @@ const menus: Option[] = [{
         <div
           cursor-pointer
           i-ic-baseline-keyboard-arrow-down
-          :class="menu && 'rotate--180'"
+          :class="serverMenu ? 'i-ic-cancel' : 'i-ic-baseline-keyboard-arrow-down'"
           transition-300
           s-22px
         />
       </header>
     </template>
-    <Selection :options="menus" />
+    <Selection :options="serverMenuOptions" />
   </NPopover>
   <div bgc-2b2d30 style="height: calc(100% - 50px)">
     <div c-text-3 pt-30px text-2 ml-20px>
       文字频道
     </div>
+    <OnClickOutside @trigger="toggleChannelMenu(false)">
+      <NPopover
+        trigger="manual"
+        :show="channelMenu"
+        :show-arrow="false"
+        :style="{
+          width: '200px',
+          padding: '6px 8px',
+          background: '#111214',
+        }"
+        placement="bottom"
+        :x="channelMenuPosition.x"
+        :y="channelMenuPosition.y"
+        style="transform: translateX(50%);"
+      >
+        <Selection :options="channelMenuOptions" />
+      </NPopover>
+    </OnClickOutside>
     <div h-30px flex-col items-center justify-between class="channel">
       <ChannelBar
         v-for="channel in channels"
         :key="channel.id"
         :channel="channel"
         :server-id="server?.id"
+        :has-unread="true"
+        @click.right="e => openChannelMenu(e, channel)"
       />
     </div>
   </div>
