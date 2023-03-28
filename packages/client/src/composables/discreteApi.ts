@@ -28,7 +28,7 @@ function openDialog(content: string | (() => VNode), options: DialogOptions = {}
     content,
     closable: false,
     showIcon: false,
-    style: { padding: '0' },
+    style: { padding: '0px', borderRadius: '10px' },
     transformOrigin: 'center',
 
     ...options,

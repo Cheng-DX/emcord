@@ -14,9 +14,18 @@ export default defineConfig({
     ],
     ['flex-center', 'display-flex justify-center items-center'],
     ['btn', 'c-text-0 flex-center r-5 cursor-pointer btn-text border-none disabled:opacity-50 disabled:cursor-not-allowed'],
-    ['btn-primary', 'btn bgc-5865f2 hover:bgc-4752c4 active:bgc-3c45a5'],
-    ['btn-success', 'btn bgc-248046 hover:bgc-1a6334 active:bgc-15562b'],
-    ['btn-danger', 'btn bgc-da373c hover:bgc-a12828 active:bgc-8f2022'],
+
+    ['btn-primary', 'btn bg-primary'],
+    ['btn-success', 'btn bg-success'],
+    ['btn-danger', 'btn bg-danger'],
+
+    ['bg-primary', 'bgc-5865f2 hover:bgc-4752c4 active:bgc-3c45a5'],
+    ['bg-success', 'bgc-248046 hover:bgc-1a6334 active:bgc-15562b'],
+    ['bg-danger', 'bgc-da373c hover:bgc-a12828 active:bgc-8f2022'],
+
+    ['c-change-1', 'c-text-1 hover:c-text-0 transition-280'],
+    ['c-change-2', 'c-text-2 hover:c-text-1 transition-280'],
+    ['c-change-3', 'c-text-3 hover:c-text-1 transition-280'],
   ],
   rules: [
     [

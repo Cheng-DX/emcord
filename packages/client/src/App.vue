@@ -21,6 +21,7 @@ import {
       </NMessageProvider>
     </NDialogProvider>
   </NConfigProvider>
+  <div id="uno" bg-success bg-primary bg-danger />
 </template>
 
 <style>
@@ -28,5 +29,9 @@ import {
   font-family: PingFang SC;
   color-scheme: dark;
   user-select: none;
+}
+
+* {
+  box-shadow: none !important;
 }
 </style>

@@ -5,7 +5,7 @@ import ChannelList from './ChannelList.vue'
 const { params } = toRefs(useRoute())
 
 const { data: channels } = useFetch(
-  () => `/api/servers/${params.value.serverId as string}/channels`, {
+  () => `/api/servers/${params.value.serverId as string}/channels?limit=20`, {
     refetch: true,
   },
 ).json<Channel[]>()

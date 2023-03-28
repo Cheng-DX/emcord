@@ -114,7 +114,6 @@ export function applyServerChannels(router: Router) {
     const { id } = req.params
     const { userId } = getAuth(req)
     const payload = req.body
-
     try {
       await findServer(id, {
         premission: true,

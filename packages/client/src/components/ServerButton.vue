@@ -29,17 +29,17 @@ const isHover = computed(() => state.value === 'hover')
   >
     <div
       v-if="!hiddenBar"
-      class="status-bar"
-      transition-all
+      class="status-bar slow-transition"
       :style="{ height: `${active ? 35 : (isHover ? 20 : 10)}px` }"
     />
     <img
       :src="avator"
       :class="imgClass || ''"
-      :style="{ borderRadius: `${(active || isHover) ? 15 : 50}px` }"
+      class="slow-transition"
+      :style="{ borderRadius: `${(active || isHover) ? 18 : 50}px` }"
       draggable="false"
+      transition
       s-48px
-      transition-all
     >
   </div>
 </template>
@@ -52,5 +52,9 @@ const isHover = computed(() => state.value === 'hover')
   border-radius: 0 4px 4px 0;
   margin-left: -15px;
   background-color: #f3f4f5
+}
+
+.slow-transition {
+  transition: all cubic-bezier(0.4, 0, 0.2, 1) 300ms;
 }
 </style>
