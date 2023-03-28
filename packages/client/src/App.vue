@@ -34,4 +34,16 @@ import {
 * {
   box-shadow: none !important;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 0;
+  background-color: #2b2d32;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #1a1b1e;
+  border-radius: 8px;
+}
 </style>

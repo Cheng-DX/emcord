@@ -18,10 +18,12 @@ export default defineConfig({
     ['btn-primary', 'btn bg-primary'],
     ['btn-success', 'btn bg-success'],
     ['btn-danger', 'btn bg-danger'],
+    ['btn-text', 'btn bg-text c-text-3'],
 
     ['bg-primary', 'bgc-5865f2 hover:bgc-4752c4 active:bgc-3c45a5'],
     ['bg-success', 'bgc-248046 hover:bgc-1a6334 active:bgc-15562b'],
     ['bg-danger', 'bgc-da373c hover:bgc-a12828 active:bgc-8f2022'],
+    ['bg-text', 'bgc-b8b9bf hover:bgc-e0e1e5 active:bgc-ffffff'],
 
     ['c-change-1', 'c-text-1 hover:c-text-0 transition-280'],
     ['c-change-2', 'c-text-2 hover:c-text-1 transition-280'],

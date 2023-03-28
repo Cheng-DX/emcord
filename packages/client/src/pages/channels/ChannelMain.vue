@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useMessage } from 'naive-ui'
+import { NInput, NPopover } from 'naive-ui'
 import type { Channel, Message, Server } from '@emcord/types'
 import type { Ref } from 'vue'
 import MessageCard from '~/components/MessageCard.vue'
+import ServerUsers from '~/components/ServerUsers.vue'
+import SearchResult from '~/components/SearchResult.vue'
 
 const { params } = toRefs(useRoute())
 
@@ -17,12 +19,12 @@ const channel = computed(() => {
   }
 })
 
-const { messages, sendText } = useSocket()
+const messageContainer = ref<HTMLDivElement>()
+const { messages, sendText } = useSocket(messageContainer)
 const msg = ref('')
 
-const message = useMessage()
 const { data } = useFetch(
-  () => `/api/channels/${params.value.channelId}/messages?limit=100`, {
+  () => `/api/channels/${params.value.channelId}/messages?limit=30`, {
     refetch: true,
   },
 ).json<Message[]>()
@@ -33,19 +35,31 @@ watch(data, (n) => {
 })
 
 function send() {
-  message.success('Sent')
   if (msg.value) {
     sendText(
       params.value.serverId as string,
       params.value.channelId as string,
       msg.value,
     )
-  }
-  nextTick(() => {
     msg.value = ''
-    window.scrollTo(0, document.body.scrollHeight)
-  })
+  }
 }
+const [showUsers, toggleShowUsers] = useToggle(false)
+
+const [showSearch, toggleShowSearch] = useToggle(false)
+const query = ref('')
+const searchResultRef = ref<typeof SearchResult>()
+function search() {
+  if (query.value) {
+    toggleShowSearch(true)
+    searchResultRef.value?.search()
+  }
+}
+
+watch(query, (newQuery, old) => {
+  if (old && !newQuery)
+    toggleShowSearch(false)
+})
 </script>
 
 <template>
@@ -58,43 +72,114 @@ function send() {
       justify-between
       class="the-header"
     >
-      <div flex items-center>
-        <img
-          src="https://api.iconify.design/octicon:hash-16.svg?color=%2380848e"
-          draggable="false"
-          s-22px
-          mr-10px
-        >
-        <strong>
-          {{ channel?.name }}
-        </strong>
+      <div flex items-center justify-between w-full>
+        <div flex items-center>
+          <img
+            src="https://api.iconify.design/octicon:hash-16.svg?color=%2380848e"
+            draggable="false"
+            s-22px
+            mr-10px
+          >
+          <strong>
+            {{ channel?.name }}
+          </strong>
+        </div>
+        <div flex items-center>
+          <div i-ic-round-notifications btn-text class="tool" />
+          <NPopover
+            :style="{
+              padding: '6px 8px',
+              background: '#111214',
+            }"
+            arrow-style="background: #111214"
+          >
+            <template #trigger>
+              <div
+                :class="showUsers ? 'i-ic-twotone-person-off' : 'i-ic-outline-person-outline'"
+                btn-text
+                class="tool" @click="toggleShowUsers()"
+              />
+            </template>
+            <span>{{ showUsers ? '隐藏成员名单' : '显示成员名单' }}</span>
+          </NPopover>
+
+          <NInput
+            v-model:value="query"
+            m-inline-8px
+            size="small"
+            placeholder="搜索"
+            :clearable="true"
+            class="search-input"
+            @keypress.enter="search()"
+          >
+            <template #prefix>
+              <div i-carbon-search s-1em />
+            </template>
+          </NInput>
+
+          <div i-carbon-pin-filled btn-text class="tool" />
+          <div i-carbon-help-filled btn-text class="tool" />
+        </div>
       </div>
     </header>
     <div
-      scroll-y
-      mt-48px
-      mb-48px
-      style="max-height: calc(100vh - 120px); width: calc(100vw - 240px - 72px)"
-    >
-      <MessageCard
-        v-for="message in messages"
-        :key="message.id"
-        :message="message"
-      />
-    </div>
-    <footer
-      h-24px
-      p-3
+      id="channel-main"
       flex
-      items-center
-      justify-between
-      class="the-footer"
+      mt-48px
+      style="width: calc(100vw - 240px - 72px)"
     >
-      <input v-model="msg" h-30px wp-100>
-      <div btn-primary h-33px w-90px ml-10px @click="send()">
-        Send
+      <div
+        id="channel-main__center"
+        flex-col
+        flex-1
+        flex
+        mt-4px
+        mr-4px
+        style="width: calc(100% - 320px)"
+      >
+        <div ref="messageContainer" w-full style="height: calc(100vh - 125px); overflow: auto;">
+          <MessageCard
+            v-for="message in messages"
+            :key="message.id"
+            :message="message"
+            wp-80
+          />
+        </div>
+        <footer
+          h-24px
+          p-3
+          flex
+          items-center
+          justify-between
+          class="the-footer"
+        >
+          <div w-full h-44px flex items-center bgc-383a40 r-8>
+            <div p-inline-16px p-block-10px>
+              <div i-ic-round-add-circle s-24px />
+            </div>
+            <div p-block-11px pr-10px style="width: calc(100% - 40px)">
+              <input
+                v-model="msg"
+                transition
+                class="inner-input"
+                @keypress.enter="send()"
+              >
+            </div>
+            <div w-40px p-inline-11px p-block-10px>
+              <div i-ic-baseline-emoji-emotions s-24px />
+            </div>
+          </div>
+        </footer>
       </div>
-    </footer>
+      <div id="channel-main__right-side" w-auto bgc-2b2d30>
+        <div v-if="showUsers && !showSearch" w-240px>
+          <ServerUsers :server-id="server?.id" />
+        </div>
+        <div v-show="showSearch" w-420px>
+          <SearchResult ref="searchResultRef" :query="query" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -113,10 +198,28 @@ function send() {
 .the-footer {
   padding: 12px 16px;
   font-size: 16px;
-  position: absolute;
   bottom: 0;
   right: 0;
-  width: calc(100vw - 240px - 72px - 32px);
+  width: calc(100% - 32px);
   margin-bottom: 24px;
+}
+
+.tool {
+  margin-inline: 8px;
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+}
+
+.search-input {
+  width: 200px;
+}
+
+.inner-input {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  height: 100%;
+  width: 100%;
 }
 </style>

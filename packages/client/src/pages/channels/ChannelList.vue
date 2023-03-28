@@ -77,7 +77,10 @@ function openChannelMenu(e: MouseEvent, channel: Channel) {
 
 <template>
   <NPopover
-    trigger="manual" :show="serverMenu" :show-arrow="false" :style="{
+    trigger="manual"
+    :show="serverMenu"
+    :show-arrow="false"
+    :style="{
       width: '200px',
       padding: '6px 8px',
       background: '#111214',

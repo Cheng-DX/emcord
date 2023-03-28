@@ -1,14 +1,25 @@
 import { type Socket, io } from 'socket.io-client'
 import consola from 'consola'
 import type { Message } from '@emcord/types'
+import type { Ref } from 'vue'
 
 const URL = 'http://localhost:9527'
 
-export function useSocket() {
+export function useSocket(messageContainer: Ref<HTMLDivElement | undefined>) {
   const [connected, toggle] = useToggle(false)
   const { token } = useToken()
   const socket = ref<Socket>()
   const messages = ref<Message[]>([])
+
+  function addMessage(msg: Message) {
+    messages.value.push(msg)
+    nextTick(() => {
+      messageContainer.value?.scrollTo({
+        behavior: 'smooth',
+        top: messageContainer.value.scrollHeight,
+      })
+    })
+  }
 
   watch(token, (newToken) => {
     if (!connected.value) {
@@ -25,14 +36,14 @@ export function useSocket() {
 
       // boardcast
       socket.value.on('message', (message) => {
-        messages.value.push(message)
+        addMessage(message)
       })
 
       // join
       socket.value.emit('join', newToken)
 
       socket.value.on('send-success', (message) => {
-        messages.value.push(message)
+        addMessage(message)
       })
     }
   }, { immediate: true })

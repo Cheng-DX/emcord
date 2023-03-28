@@ -48,9 +48,11 @@ const { id, author, content, timestamp } = toRefs(props.message)
 }
 .message-body {
   margin-left: 16px;
+  width: 100%;
 }
 .text {
-  width: calc(100vw - 240px - 72px - 48px - 85px);
+  /* width: calc(100vw - 240px - 72px - 48px - 85px); */
+  width: 100%;
   line-height: 1.5rem;
   word-wrap: break-word;
   user-select: text;
