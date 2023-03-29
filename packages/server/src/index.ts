@@ -29,6 +29,7 @@ app.use(
   }),
 )
 
+// @ts-expect-error has no default export
 app.use((err, _req, res, _next) => {
   if (err.name === 'UnauthorizedError') {
     return res.send({

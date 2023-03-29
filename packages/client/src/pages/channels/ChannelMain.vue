@@ -2,6 +2,7 @@
 import { NInput, NPopover } from 'naive-ui'
 import type { Channel, Message, Server } from '@emcord/types'
 import type { Ref } from 'vue'
+import { UseElementSize } from '@vueuse/components'
 import MessageCard from '~/components/MessageCard.vue'
 import ServerUsers from '~/components/ServerUsers.vue'
 import SearchResult from '~/components/SearchResult.vue'
@@ -24,14 +25,20 @@ const { messages, sendText } = useSocket(messageContainer)
 const msg = ref('')
 
 const { data } = useFetch(
-  () => `/api/channels/${params.value.channelId}/messages?limit=30`, {
+  () => `/api/channels/${params.value.channelId}/messages?limit=20`, {
     refetch: true,
   },
 ).json<Message[]>()
 
 watch(data, (n) => {
-  if (n)
+  if (n) {
     messages.value = n.reverse()
+    nextTick(() => {
+      messageContainer.value?.scrollTo({
+        top: messageContainer.value.scrollHeight,
+      })
+    })
+  }
 })
 
 function send() {
@@ -44,7 +51,10 @@ function send() {
     msg.value = ''
   }
 }
-const [showUsers, toggleShowUsers] = useToggle(false)
+const showUsers = useLocalStorage('showUsers', false, {
+  mergeDefaults: true,
+})
+const toggleShowUsers = useToggle(showUsers)
 
 const [showSearch, toggleShowSearch] = useToggle(false)
 const query = ref('')
@@ -63,7 +73,7 @@ watch(query, (newQuery, old) => {
 </script>
 
 <template>
-  <div flex-1>
+  <div min-w-50vw h-full>
     <header
       h-24px
       p-3
@@ -86,6 +96,7 @@ watch(query, (newQuery, old) => {
         </div>
         <div flex items-center>
           <div i-ic-round-notifications btn-text class="tool" />
+          <div i-carbon-pin-filled btn-text class="tool" />
           <NPopover
             :style="{
               padding: '6px 8px',
@@ -117,7 +128,6 @@ watch(query, (newQuery, old) => {
             </template>
           </NInput>
 
-          <div i-carbon-pin-filled btn-text class="tool" />
           <div i-carbon-help-filled btn-text class="tool" />
         </div>
       </div>
@@ -126,7 +136,7 @@ watch(query, (newQuery, old) => {
       id="channel-main"
       flex
       mt-48px
-      style="width: calc(100vw - 240px - 72px)"
+      style="width: calc(100vw - 240px - 72px); height: calc(100vh - 48px)"
     >
       <div
         id="channel-main__center"
@@ -136,8 +146,9 @@ watch(query, (newQuery, old) => {
         mt-4px
         mr-4px
         style="width: calc(100% - 320px)"
+        h-full
       >
-        <div ref="messageContainer" w-full style="height: calc(100vh - 125px); overflow: auto;">
+        <div ref="messageContainer" w-full flex-1 style="overflow: auto;">
           <MessageCard
             v-for="message in messages"
             :key="message.id"
@@ -146,7 +157,6 @@ watch(query, (newQuery, old) => {
           />
         </div>
         <footer
-          h-24px
           p-3
           flex
           items-center
@@ -162,7 +172,8 @@ watch(query, (newQuery, old) => {
                 v-model="msg"
                 transition
                 class="inner-input"
-                @keypress.enter="send()"
+                :placeholder="`给 #${channel?.name} 发消息`"
+                @keypress.exact.enter="send()"
               >
             </div>
             <div w-40px p-inline-11px p-block-10px>
@@ -171,11 +182,11 @@ watch(query, (newQuery, old) => {
           </div>
         </footer>
       </div>
-      <div id="channel-main__right-side" w-auto bgc-2b2d30>
+      <div id="channel-main__right-side" w-auto bgc-2b2d30 transition-400>
         <div v-if="showUsers && !showSearch" w-240px>
           <ServerUsers :server-id="server?.id" />
         </div>
-        <div v-show="showSearch" w-420px>
+        <div v-show="showSearch" w-420px transition>
           <SearchResult ref="searchResultRef" :query="query" />
         </div>
       </div>
@@ -197,6 +208,7 @@ watch(query, (newQuery, old) => {
 }
 .the-footer {
   padding: 12px 16px;
+  padding-top: 0px;
   font-size: 16px;
   bottom: 0;
   right: 0;
@@ -219,7 +231,6 @@ watch(query, (newQuery, old) => {
   outline: none;
   border: none;
   background-color: transparent;
-  height: 100%;
   width: 100%;
 }
 </style>

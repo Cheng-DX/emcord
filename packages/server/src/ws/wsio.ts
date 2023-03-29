@@ -2,10 +2,22 @@ import { Server } from 'socket.io'
 import { verify } from 'jsonwebtoken'
 import type { TokenPayload, User } from '@emcord/types'
 import consola from 'consola'
+import { Configuration, OpenAIApi } from 'openai'
 import { secretKey } from '../consts'
 import { findUser } from '../router/modules/user'
 import { setOnline } from '../router/modules/server'
 import { findChannel, sendMsg } from '../router/modules/channel'
+import { apiKey } from '../../__apiKey__'
+
+const config = new Configuration({
+  apiKey,
+})
+const openai = new OpenAIApi(config)
+const openaiPayload = {
+  userId: '6423c1a9f1d3496feb9423a7',
+  name: 'ChatGPT',
+  avator: 'https://api.iconify.design/tabler:brand-openai.svg?color=%23ffffff',
+}
 
 const wss = new Server({
   cors: {
@@ -76,6 +88,22 @@ wss.on('connection', (socket) => {
         const message = await sendMsg(msg, channelId, info.auth!)
         socket.to(serverId).emit('message', message)
         socket.emit('send-success', message)
+
+        if (message.content.includes('@ChatGPT')) {
+          const { data } = await openai.createChatCompletion({
+            model: 'gpt-3.5-turbo',
+            messages: [{
+              role: 'user',
+              content: message.content,
+            }],
+          })
+          const reply = data.choices[0].message?.content
+          if (reply) {
+            const msg = await sendMsg({ type: 0, content: reply }, channelId, openaiPayload)
+            socket.to(serverId).emit('message', msg)
+            socket.emit('send-success', msg)
+          }
+        }
       }
     }
     catch (e) {

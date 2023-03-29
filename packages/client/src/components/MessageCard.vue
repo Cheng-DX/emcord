@@ -9,8 +9,8 @@ const { id, author, content, timestamp } = toRefs(props.message)
 </script>
 
 <template>
-  <div mt-5px mb-5px flex class="card">
-    <aside w-50px>
+  <div mt-5px mb-5px flex class="card" hover:bgc-2e3035>
+    <aside w-40px>
       <img
         :src="author.avator"
         draggable="false"
@@ -45,10 +45,12 @@ const { id, author, content, timestamp } = toRefs(props.message)
 .card {
   padding: 2px 48px 2px 20px;
   margin-top: 17px;
+  width: calc(100% - 68px);
+  border-radius: 5px;
 }
 .message-body {
   margin-left: 16px;
-  width: 100%;
+  width: calc(100% - 50px - 16px);
 }
 .text {
   /* width: calc(100vw - 240px - 72px - 48px - 85px); */
