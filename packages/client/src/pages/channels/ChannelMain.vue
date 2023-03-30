@@ -184,7 +184,7 @@ watch(query, (newQuery, old) => {
       </div>
       <div id="channel-main__right-side" w-auto bgc-2b2d30 transition-400>
         <div v-if="showUsers && !showSearch" w-240px>
-          <ServerUsers :server-id="server?.id" />
+          <ServerUsers :server="server" />
         </div>
         <div v-show="showSearch" w-420px transition>
           <SearchResult ref="searchResultRef" :query="query" />
