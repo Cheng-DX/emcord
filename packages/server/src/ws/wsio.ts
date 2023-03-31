@@ -66,7 +66,6 @@ wss.on('connection', (socket) => {
       const { servers } = info.user!
       socket.join(servers)
       onlineUsers.add(info.user!.id)
-      consola.success('join', servers, info.user!.name)
     }
     catch (e: any) {
       consola.success(e)

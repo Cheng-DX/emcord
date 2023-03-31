@@ -17,7 +17,7 @@ function a() {
     <NFormItem label="服务器名称" label-placement="top" label-style="font-size: 10px" required p-10px>
       <NInput v-model:value="serverName" placeholder="" />
     </NFormItem>
-    <div bgc-1e1f2288 h-60px flex items-center justify-end>
+    <div bgc-theme-1-trans h-60px flex items-center justify-end>
       <button
         mr-20px h-40px w-90px btn-primary :disabled="serverName === ''" @click="a"
       >

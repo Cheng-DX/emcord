@@ -50,12 +50,7 @@ async function createChannel() {
         </div>
         <NInput v-model:value="channelName" placeholder="" style="outline: none;">
           <template #prefix>
-            <img
-              src="https://api.iconify.design/octicon:hash-16.svg?color=%23b8b9bf"
-              draggable="false"
-              s-18px
-              mr-1px
-            >
+            <div i-octicon-hash-16 c-text-3 mr-1px s-18px />
           </template>
         </ninput>
       </div>
@@ -64,13 +59,33 @@ async function createChannel() {
           <div i-ic-sharp-lock-person c-text-3 s-15px mr-6px />
           私密频道
         </div>
-        <NSwitch v-model:value="isPrivate" style="transform: scale(1.15);" mr-5px />
+        <NSwitch
+          v-model:value="isPrivate"
+          style="transform: scale(1.15);"
+          mr-5px
+        >
+          <template #icon>
+            <div
+              class="icon right" :style="{
+                transform: isPrivate ? 'translate(2px) rotate(45deg)' : 'rotate(-45deg)',
+                backgroundColor: isPrivate ? 'green' : 'red',
+              }"
+            />
+            <div
+              class="icon left" :style="{
+                transform: isPrivate ? 'translate(-2px, 2px) rotate(-45deg)' : 'rotate(45deg)',
+                height: isPrivate ? '5px' : '10px',
+                backgroundColor: isPrivate ? 'green' : 'red',
+              }"
+            />
+          </template>
+        </NSwitch>
       </div>
       <div c-text-3 mt-5px>
         只有我可以看到这个频道
       </div>
     </div>
-    <div bgc-1e1f2288 h-60px flex items-center justify-end>
+    <div bgc-theme-1-trans h-60px flex items-center justify-end>
       <button
         mr-20px h-40px w-90px btn-primary :disabled="channelName === ''" @click="createChannel()"
       >
@@ -81,4 +96,18 @@ async function createChannel() {
 </template>
 
 <style scoped>
+.icon {
+  width: 2px;
+  height: 10px;
+  position: absolute;
+  background-color: red;
+  border-radius: 1px;
+  transition: 300ms;
+}
+.right {
+  transform: rotate(45deg);
+}
+.left {
+  transform: rotate(-45deg);
+}
 </style>

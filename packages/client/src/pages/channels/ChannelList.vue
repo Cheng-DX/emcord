@@ -33,7 +33,6 @@ const serverMenuOptions: Option[] = [{
   },
   value: 'create-channel',
   type: 'success',
-  color: 'green',
 }, {
   label: '服务器设置',
   icon: 'i-ic-baseline-settings',
@@ -41,6 +40,19 @@ const serverMenuOptions: Option[] = [{
   },
   value: 'server-settings',
   type: 'primary',
+}, {
+  label: '服务器设置',
+  icon: 'i-ic-baseline-settings',
+  onClick: () => {
+  },
+  value: 'server-settings',
+  type: 'danger',
+}, {
+  label: '服务器设置',
+  icon: 'i-ic-baseline-settings',
+  onClick: () => {
+  },
+  value: 'server-settings',
 }]
 
 const [channelMenu, toggleChannelMenu] = useToggle(false)
@@ -57,7 +69,6 @@ const channelMenuOptions: Option[] = [{
   },
   value: 'create-channel',
   type: 'primary',
-  color: 'green',
 }, {
   label: '复制ID',
   icon: 'i-carbon-checkmark-filled',
@@ -83,13 +94,13 @@ function openChannelMenu(e: MouseEvent, channel: Channel) {
     :style="{
       width: '200px',
       padding: '6px 8px',
-      background: '#111214',
+      background: 'var(--c-theme-0)',
     }"
   >
     <template #trigger>
       <header
         h-24px p-3 flex items-center justify-between class="the-header"
-        bgc-2b2d30 hover:bgc-35373d transition cursor-pointer
+        theme-2 transition cursor-pointer
         @click="toggleServerMenu(!serverMenu)"
       >
         <div flex items-center c-text-0>
@@ -108,7 +119,7 @@ function openChannelMenu(e: MouseEvent, channel: Channel) {
     </template>
     <Selection :options="serverMenuOptions" />
   </NPopover>
-  <div bgc-2b2d30 style="height: calc(100% - 50px)">
+  <div bgc-theme-2 style="height: calc(100% - 50px)">
     <div c-text-3 pt-30px text-2 ml-20px>
       文字频道
     </div>
@@ -120,7 +131,7 @@ function openChannelMenu(e: MouseEvent, channel: Channel) {
         :style="{
           width: '200px',
           padding: '6px 8px',
-          background: '#111214',
+          background: 'var(--c-theme-0)',
         }"
         placement="bottom"
         :x="channelMenuPosition.x"
@@ -145,7 +156,7 @@ function openChannelMenu(e: MouseEvent, channel: Channel) {
 
 <style scoped>
 .the-header {
-  border-bottom-color: rgba(26, 23, 23, 0.638);
+  border-bottom-color: #1a1717a3;
   border-bottom-style: solid;
   border-bottom-width: 1px;
   padding: 12px 16px;

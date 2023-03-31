@@ -9,7 +9,7 @@ const { id, author, content, timestamp } = toRefs(props.message)
 </script>
 
 <template>
-  <div mt-5px mb-5px flex class="card" hover:bgc-2e3035>
+  <div mt-5px mb-5px flex class="card" hover:bgc-theme-3>
     <aside w-40px>
       <img
         :src="author.avator"

@@ -51,7 +51,7 @@ const isHover = computed(() => state.value === 'hover')
   width: 8px;
   border-radius: 0 4px 4px 0;
   margin-left: -15px;
-  background-color: #f3f4f5
+  background-color: var(--c-text-1)
 }
 
 .slow-transition {

@@ -84,12 +84,7 @@ watch(query, (newQuery, old) => {
     >
       <div flex items-center justify-between w-full>
         <div flex items-center>
-          <img
-            src="https://api.iconify.design/octicon:hash-16.svg?color=%2380848e"
-            draggable="false"
-            s-22px
-            mr-10px
-          >
+          <div i-octicon-hash-16 c-text-3 s-22px mr-10px />
           <strong>
             {{ channel?.name }}
           </strong>
@@ -100,9 +95,10 @@ watch(query, (newQuery, old) => {
           <NPopover
             :style="{
               padding: '6px 8px',
-              background: '#111214',
+              background: 'var(--c-theme-0)',
             }"
-            arrow-style="background: #111214"
+            c-text-1
+            arrow-style="background: var(--c-theme-0)"
           >
             <template #trigger>
               <div
@@ -163,7 +159,7 @@ watch(query, (newQuery, old) => {
           justify-between
           class="the-footer"
         >
-          <div w-full h-44px flex items-center bgc-383a40 r-8>
+          <div w-full h-44px flex items-center bgc-theme-5 r-8>
             <div p-inline-16px p-block-10px>
               <div i-ic-round-add-circle s-24px />
             </div>
@@ -182,7 +178,7 @@ watch(query, (newQuery, old) => {
           </div>
         </footer>
       </div>
-      <div id="channel-main__right-side" w-auto bgc-2b2d30 transition-400>
+      <div id="channel-main__right-side" w-auto bgc-theme-2 transition-400>
         <div v-if="showUsers && !showSearch" w-240px>
           <ServerUsers :server="server" />
         </div>

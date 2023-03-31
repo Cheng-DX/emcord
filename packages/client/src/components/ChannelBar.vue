@@ -33,9 +33,9 @@ function settings() {
     transition
     r-3
     h-34px
-    hover:bgc-35373d
+    hover:bgc-theme-2-hover
     :style="{
-      'background-color': isActive ? '#404248' : '',
+      'background-color': isActive ? 'var(--c-theme-2-active)' : '',
     }"
     class="channel-bar"
     :class="isActive ? 'active' : ''"
@@ -45,18 +45,13 @@ function settings() {
       v-if="hasUnread"
       class="status-bar slow-transition"
     />
-    <img
-      src="https://api.iconify.design/octicon:hash-16.svg?color=%23b8b9bf77"
-      draggable="false"
-      s-18px
-      mr-10px
-    >
+    <div i-octicon-hash-16 s-18px mr-6px p-inline-4px c-text-3-trans />
     <div flex items-center justify-between w-full>
       <div
         :class="isActive ? 'c-text-0' : 'c-text-3'"
         text-15px
         decoration-none
-        style="line-height: 17px;"
+        style="line-height: 18px;"
         font-500
       >
         {{ channel.name }}
@@ -65,7 +60,7 @@ function settings() {
         <div
           i-heroicons-cog-8-tooth-20-solid
           s-14px
-          c-b8b9bf77
+          c-text-3
           hover:c-text-2
           transition
           @click="settings()"
@@ -95,7 +90,7 @@ function settings() {
   width: 4px;
   border-radius: 0 4px 4px 0;
   margin-left: -14px;
-  background-color: #f3f4f5;
+  background-color: var(--c-text-1);
   height: 8px;
 }
 

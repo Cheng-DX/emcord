@@ -31,7 +31,7 @@ defineProps<{
       c-text-2
       font-600
       :style="{
-        color: option.color,
+        color: option.color || option.type ? `var(--c-${option.type})` : '',
       }"
       class="option"
       @click="option.onClick()"
@@ -44,6 +44,6 @@ defineProps<{
 
 <style scoped>
 .option:hover {
-  color: #fff !important;
+  color: var(--c-text-0) !important;
 }
 </style>

@@ -13,7 +13,7 @@ const props = defineProps<{
     cursor-pointer
     transition
     h-42px
-    hover:bgc-35373d
+    hover:bgc-theme-2-hover
     r-5
     c-text-3
     hover:c-text-1

@@ -1,0 +1,29 @@
+:root {
+  --c-theme-0: #111214;
+  --c-theme-1: #1e1f22;
+  --c-theme-1-trans: #1e1f2288;
+  --c-theme-2: #2b2d30;
+  --c-theme-2-hover: #35373d;
+  --c-theme-2-active: #404248;
+  --c-theme-3: #2e3035;
+  --c-theme-4: #313338;
+  --c-theme-5: #383a40;
+
+  --c-primary: #5865f2;
+  --c-primary-hover: #4752c4;
+  --c-primary-active: #3c45a5;
+
+  --c-success: #248046;
+  --c-success-hover: #1a6334;
+  --c-success-active: #15562b;
+
+  --c-danger: #da373c;
+  --c-danger-hover: #a12828;
+  --c-danger-active: #8f2022;
+
+  --c-text-0: #ffffff;
+  --c-text-1: #f3f4f5;
+  --c-text-2: #e0e1e5;
+  --c-text-3: #b8b9bf;
+  --c-text-3-trans: #b8b9bf88;
+}
