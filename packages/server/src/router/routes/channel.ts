@@ -81,16 +81,25 @@ export function applyChannelMessage(router: Router) {
         mentionEveryone,
       } = await formatMsg(msg, id, auth)
 
-      const message = await MessageModel.findOneAndUpdate({
-        'id': messageId,
-        'author.userId': auth.userId,
-      }, {
+      const _ = await MessageModel.findById({
+        _id: messageId,
+      })
+      if (!_)
+        throw new CustomError('INVALID_IDENTITY')
+      if (_.author.userId !== auth.userId)
+        throw new CustomError('PERMISSION_DENIED')
+
+      const message = await MessageModel.findByIdAndUpdate(messageId, {
         content,
         attachments,
         embeds,
         mentions,
         mentionEveryone,
       }, { new: true })
+
+      if (!message)
+        throw new CustomError('PERMISSION_DENIED')
+
       ok(res, message)
     }
     catch (e: any) {
