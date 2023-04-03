@@ -32,7 +32,7 @@ function addServer() {
     >
       <ServerButton
         :name="server.name"
-        :to="`/channels/${server.id}/-1`"
+        :to="`/channels/${server.id}`"
         :avator="server.avator"
         :active="route.path.includes(server.id)"
       />

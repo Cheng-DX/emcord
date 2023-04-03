@@ -69,13 +69,21 @@ const channelMenuOptions: Option[] = [{
   },
   value: 'create-channel',
   type: 'primary',
+  color: '',
 }, {
   label: '复制ID',
   icon: 'i-carbon-checkmark-filled',
   onClick: () => {
   },
   value: 'copy-id',
-  type: 'primary',
+}, {
+  label: '删除频道',
+  icon: 'i-ic-baseline-delete-forever',
+  onClick: () => {
+    openDialog('确定删除频道吗？')
+  },
+  value: 'delete-channel',
+  type: 'danger',
 }]
 function openChannelMenu(e: MouseEvent, channel: Channel) {
   e.preventDefault()

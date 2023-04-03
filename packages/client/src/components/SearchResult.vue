@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineExpose } from 'vue'
 import type { Message } from '@emcord/types'
 
 const props = defineProps<{

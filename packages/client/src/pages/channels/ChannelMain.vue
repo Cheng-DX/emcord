@@ -2,7 +2,7 @@
 import { NInput, NPopover } from 'naive-ui'
 import type { Channel, Message, Server } from '@emcord/types'
 import type { Ref } from 'vue'
-import { UseElementSize } from '@vueuse/components'
+
 import MessageCard from '~/components/MessageCard.vue'
 import ServerUsers from '~/components/ServerUsers.vue'
 import SearchResult from '~/components/SearchResult.vue'
@@ -31,14 +31,8 @@ const { data } = useFetch(
 ).json<Message[]>()
 
 watch(data, (n) => {
-  if (n) {
+  if (n)
     messages.value = n.reverse()
-    nextTick(() => {
-      messageContainer.value?.scrollTo({
-        top: messageContainer.value.scrollHeight,
-      })
-    })
-  }
 })
 
 function send() {

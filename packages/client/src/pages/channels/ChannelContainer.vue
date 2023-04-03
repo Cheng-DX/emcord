@@ -2,6 +2,10 @@
 import type { Channel, Server } from '@emcord/types'
 import ChannelList from './ChannelList.vue'
 
+const route = useRoute()
+watch(route, () => {
+  console.log('route changed', { ...route })
+})
 const { params } = toRefs(useRoute())
 
 const { data: channels, execute: reloadChannels } = useFetch(

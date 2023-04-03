@@ -15,9 +15,11 @@ import {
   >
     <NDialogProvider>
       <NMessageProvider style="height: auto;" placement="bottom-right">
-        <div>
-          <router-view id="router-view" />
-        </div>
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </router-view>
       </NMessageProvider>
     </NDialogProvider>
   </NConfigProvider>
@@ -36,14 +38,12 @@ import {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
   height: 0;
-  background-color: #2b2d32;
-  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #1a1b1e;
-  border-radius: 8px;
+  background-color: var(--c-text-3-trans);
+  border-radius: 4px;
 }
 </style>
