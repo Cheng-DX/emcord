@@ -5,11 +5,13 @@ import {
   NMessageProvider,
   darkTheme,
 } from 'naive-ui'
+import hljs from 'highlight.js/lib/common'
 </script>
 
 <template>
   <NConfigProvider
     :theme="darkTheme"
+    :hljs="hljs"
     h-screen
     c-text-2
   >
@@ -28,7 +30,7 @@ import {
 
 <style>
 :root {
-  font-family: PingFang SC;
+  font-family: 'Lato' sans-serif;
   color-scheme: dark;
   user-select: none;
 }

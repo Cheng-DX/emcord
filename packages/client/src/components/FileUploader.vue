@@ -6,7 +6,7 @@ const props = defineProps<{
   modelValue: Attachment[]
 }>()
 const emits = defineEmits<{
-  'update:modelValue': (value: Attachment[]) => void
+  (e: 'update:modelValue', value: Attachment[]): void
 }>()
 
 const files = ref<Attachment[]>(props.modelValue)
@@ -29,9 +29,8 @@ function onFinish(_: any) {
     default:
       type = 2
   }
-
   files.value.push({ filename: name, url: secure_url, size: byte, width, height, type })
-  emits['update:modelValue'](files.value)
+  emits('update:modelValue', files.value)
 }
 
 function onRemove({ file }: any) {
@@ -39,7 +38,6 @@ function onRemove({ file }: any) {
   if (index === -1)
     return
   files.value.splice(index, 1)
-  emits['update:modelValue'](files.value)
 }
 </script>
 

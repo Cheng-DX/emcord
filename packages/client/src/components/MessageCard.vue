@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import type { Message } from '@emcord/types'
+import FilePreviewer from './FilePreviewer.vue'
 
 const props = defineProps<{
   message: Message
 }>()
 
 const { author, content, timestamp } = toRefs(props.message)
+
+function remove(url: string) {
+  console.log(url)
+}
 </script>
 
 <template>
@@ -37,6 +42,12 @@ const { author, content, timestamp } = toRefs(props.message)
       <div class="text">
         {{ content }}
       </div>
+      <FilePreviewer
+        v-for="file in props.message.attachments"
+        :key="file.url"
+        :file="file"
+        @remove="remove"
+      />
     </main>
   </div>
 </template>

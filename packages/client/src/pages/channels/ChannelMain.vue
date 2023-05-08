@@ -6,7 +6,7 @@ import MessageCard from '~/components/MessageCard.vue'
 import ServerUsers from '~/components/ServerUsers.vue'
 import SearchResult from '~/components/SearchResult.vue'
 import FileUploader from '~/components/FileUploader.vue'
-import FilePreview from '~/components/FilePreview.vue'
+import FileEditor from '~/components/FileEditor.vue'
 
 const { params } = toRefs(useRoute())
 
@@ -31,13 +31,7 @@ const { data } = useFetch(
   },
 ).json<Message[]>()
 
-const files = ref<Attachment[]>([
-  {
-    filename: 'options.json',
-    url: 'https://res.cloudinary.com/dwnw5imiw/raw/upload/v1683544816/p0n1uornnxqhh4i60au2.json',
-    type: 2,
-  },
-])
+const files = ref<Attachment[]>([])
 function onRemove(url: string) {
   files.value = files.value.filter((file) => file.url !== url)
 }
@@ -176,7 +170,7 @@ watch(query, (newQuery, old) => {
         >
           <div v-if="hasAttachment" w-full h-200px flex items-center bgc-theme-5 r-8 mb-2px>
             <div v-for="file in files" :key="file.url">
-              <FilePreview :file="file" @remove="onRemove" />
+              <FileEditor :file="file" @remove="onRemove" />
             </div>
           </div>
           <div w-full h-44px flex items-center bgc-theme-5 r-8>
