@@ -4,7 +4,7 @@ import ChannelList from './ChannelList.vue'
 
 const route = useRoute()
 watch(route, () => {
-  console.log('route changed', { ...route })
+  console.log('route changed', route.params.channelId)
 })
 const { params } = toRefs(useRoute())
 

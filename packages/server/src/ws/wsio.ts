@@ -7,10 +7,10 @@ import { secretKey } from '../consts'
 import { findUser } from '../router/modules/user'
 import { setOnline } from '../router/modules/server'
 import { findChannel, sendMsg } from '../router/modules/channel'
-import { apiKey } from '../../__apiKey__'
+import { apiKey, arcKey } from '../../__apiKey__'
 
 const config = new Configuration({
-  apiKey,
+  apiKey: arcKey,
 })
 const openai = new OpenAIApi(config)
 const openaiPayload = {

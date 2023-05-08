@@ -301,12 +301,12 @@ export function applyServerMembers(router: Router) {
     const { limit = 1 } = req.query
     try {
       const { membersPreview } = await getServerPreview(id, {
-        memberLimit: Number(limit) as number,
+        memberLimit: Number.NaN,
       })
       const onlineMembersPreview = membersPreview
         .filter((member) => onlineUsers.has(member.id))
 
-      return ok(res, onlineMembersPreview)
+      return ok(res, onlineMembersPreview.slice(0, Number(limit)))
     }
     catch (e: any) {
       err(res, e)

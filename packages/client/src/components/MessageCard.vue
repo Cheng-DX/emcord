@@ -5,7 +5,7 @@ const props = defineProps<{
   message: Message
 }>()
 
-const { id, author, content, timestamp } = toRefs(props.message)
+const { author, content, timestamp } = toRefs(props.message)
 </script>
 
 <template>
@@ -53,7 +53,6 @@ const { id, author, content, timestamp } = toRefs(props.message)
   width: calc(100% - 50px - 16px);
 }
 .text {
-  /* width: calc(100vw - 240px - 72px - 48px - 85px); */
   width: 100%;
   line-height: 1.5rem;
   word-wrap: break-word;

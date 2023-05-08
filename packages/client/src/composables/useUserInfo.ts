@@ -12,7 +12,7 @@ export function useUserInfo() {
   const userOverview = computed<UserPreview | null>(() => {
     if (hasUserInfo) {
       return {
-        userId: userInfo.value!.id,
+        id: userInfo.value!.id,
         avator: userInfo.value!.avator,
         name: userInfo.value!.name,
       }

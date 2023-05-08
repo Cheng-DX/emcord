@@ -14,4 +14,3 @@ export function useStatus<R extends string, T extends R[]>(
     ...r,
   }
 }
-

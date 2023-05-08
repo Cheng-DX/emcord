@@ -41,9 +41,4 @@ import {
   width: 5px;
   height: 0;
 }
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--c-text-3-trans);
-  border-radius: 4px;
-}
 </style>
