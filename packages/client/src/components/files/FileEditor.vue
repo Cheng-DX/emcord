@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import type { Attachment } from '@emcord/types'
+import type { Ref } from 'vue'
+import { NProgress } from 'naive-ui'
+import type { LoadingFile } from './types'
 
 const props = defineProps<{
-  file: Attachment
+  file: LoadingFile
 }>()
-
-const emits = defineEmits<{
-  (e: 'remove', url: string): void
-}>()
-
+const files = inject<Ref<LoadingFile[]>>('files')!
 function remove(url: string) {
-  emits('remove', url)
+  files.value = files.value.filter((file) => file.url !== url)
 }
 
 const logo = computed(() => {
@@ -33,7 +32,14 @@ const logo = computed(() => {
     <div class="toolbox" flex-center gap-10px bg-danger>
       <div i-carbon-delete s-10px class="tool" @click="remove(file.url)" />
     </div>
-    <img :src="logo" w-full hp-80 object-contain>
+    <img v-if="file.status === 'done'" :src="logo" w-full hp-80 object-contain>
+    <div v-else flex-center w-full hp-80>
+      <NProgress
+        :percentage="file.progress"
+        indicator-placement="inside"
+        :processing="file.status === 'uploading'"
+      />
+    </div>
     <div hp-20 text-3 c-text-2 flex items-center class="i">
       <span>
         {{ file.filename }}

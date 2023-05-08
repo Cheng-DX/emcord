@@ -5,8 +5,9 @@ import type { Ref } from 'vue'
 import MessageCard from '~/components/MessageCard.vue'
 import ServerUsers from '~/components/ServerUsers.vue'
 import SearchResult from '~/components/SearchResult.vue'
-import FileUploader from '~/components/FileUploader.vue'
-import FileEditor from '~/components/FileEditor.vue'
+import FileUploader from '~/components/files/FileUploader.vue'
+import FileEditor from '~/components/files/FileEditor.vue'
+import type { LoadingFile } from '~/components/files/types'
 
 const { params } = toRefs(useRoute())
 
@@ -31,7 +32,8 @@ const { data } = useFetch(
   },
 ).json<Message[]>()
 
-const files = ref<Attachment[]>([])
+const files = ref<LoadingFile[]>([])
+provide('files', files)
 function onRemove(url: string) {
   files.value = files.value.filter((file) => file.url !== url)
 }
@@ -160,6 +162,7 @@ watch(query, (newQuery, old) => {
             :message="message"
             wp-80
           />
+          <div mt-10px />
         </div>
         <footer
           p-3
@@ -175,7 +178,7 @@ watch(query, (newQuery, old) => {
           </div>
           <div w-full h-44px flex items-center bgc-theme-5 r-8>
             <div p-inline-16px p-block-10px>
-              <FileUploader :model-value="files">
+              <FileUploader v-model="files">
                 <div i-ic-round-add-circle s-24px />
               </FileUploader>
             </div>

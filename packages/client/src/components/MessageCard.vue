@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Message } from '@emcord/types'
-import FilePreviewer from './FilePreviewer.vue'
+import FilePreviewer from './files/FilePreviewer.vue'
 
 const props = defineProps<{
   message: Message
