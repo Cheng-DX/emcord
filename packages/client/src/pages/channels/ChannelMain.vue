@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { NInput, NPopover } from 'naive-ui'
-import type { Channel, Message, Server } from '@emcord/types'
+import type { Attachment, Channel, Message, Server } from '@emcord/types'
 import type { Ref } from 'vue'
-
 import MessageCard from '~/components/MessageCard.vue'
 import ServerUsers from '~/components/ServerUsers.vue'
 import SearchResult from '~/components/SearchResult.vue'
+import FileUploader from '~/components/FileUploader.vue'
+import FilePreview from '~/components/FilePreview.vue'
 
 const { params } = toRefs(useRoute())
 
@@ -21,7 +22,7 @@ const channel = computed(() => {
 })
 
 const messageContainer = ref<HTMLDivElement>()
-const { messages, sendText } = useSocket(messageContainer)
+const { messages, sendText, sendAttach } = useSocket(messageContainer)
 const msg = ref('')
 
 const { data } = useFetch(
@@ -30,18 +31,37 @@ const { data } = useFetch(
   },
 ).json<Message[]>()
 
+const files = ref<Attachment[]>([
+  {
+    filename: 'options.json',
+    url: 'https://res.cloudinary.com/dwnw5imiw/raw/upload/v1683544816/p0n1uornnxqhh4i60au2.json',
+    type: 2,
+  },
+])
+function onRemove(url: string) {
+  files.value = files.value.filter((file) => file.url !== url)
+}
+
 watch(data, (n) => {
   if (n)
     messages.value = n.reverse()
 })
 
+const hasAttachment = computed(() => {
+  return files.value.length > 0
+})
 function send() {
+  const serverId = params.value.serverId as string
+  const channelId = params.value.channelId as string
+
+  if (hasAttachment.value) {
+    sendAttach(serverId, channelId, files.value, msg.value)
+    files.value = []
+    msg.value = ''
+    return
+  }
   if (msg.value) {
-    sendText(
-      params.value.serverId as string,
-      params.value.channelId as string,
-      msg.value,
-    )
+    sendText(serverId, channelId, msg.value)
     msg.value = ''
   }
 }
@@ -98,7 +118,8 @@ watch(query, (newQuery, old) => {
               <div
                 :class="showUsers ? 'i-ic-twotone-person-off' : 'i-ic-outline-person-outline'"
                 btn-text
-                class="tool" @click="toggleShowUsers()"
+                class="tool"
+                @click="toggleShowUsers()"
               />
             </template>
             <span>{{ showUsers ? '隐藏成员名单' : '显示成员名单' }}</span>
@@ -148,14 +169,21 @@ watch(query, (newQuery, old) => {
         </div>
         <footer
           p-3
-          flex
+          flex-col
           items-center
           justify-between
           class="the-footer"
         >
+          <div v-if="hasAttachment" w-full h-200px flex items-center bgc-theme-5 r-8 mb-2px>
+            <div v-for="file in files" :key="file.url">
+              <FilePreview :file="file" @remove="onRemove" />
+            </div>
+          </div>
           <div w-full h-44px flex items-center bgc-theme-5 r-8>
             <div p-inline-16px p-block-10px>
-              <div i-ic-round-add-circle s-24px />
+              <FileUploader :model-value="files">
+                <div i-ic-round-add-circle s-24px />
+              </FileUploader>
             </div>
             <div p-block-11px pr-10px style="width: calc(100% - 40px)">
               <input

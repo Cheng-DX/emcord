@@ -43,8 +43,8 @@ export interface EmojiReaction {
   count: number
   users: string[]
 }
-type AttachmentType = 0 | 1 | 2
-// 'IMAGE' | 'VIDEO' | 'FILE'
+export type AttachmentType = 0 | 1 | 2
+// 'IMAGE' | 'VIDEO' | 'RAW'
 export interface Attachment {
   type: AttachmentType
   url: string

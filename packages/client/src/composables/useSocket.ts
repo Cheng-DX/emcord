@@ -1,6 +1,6 @@
 import { type Socket, io } from 'socket.io-client'
 import consola from 'consola'
-import type { Message } from '@emcord/types'
+import type { Attachment, Message } from '@emcord/types'
 import type { Ref } from 'vue'
 
 const URL = 'http://localhost:9527'
@@ -45,6 +45,12 @@ export function useSocket(messageContainer: Ref<HTMLDivElement | undefined>) {
       socket.value.on('send-success', (message) => {
         addMessage(message)
       })
+
+      socket.value.on('send-fail', (e) => {
+        notification.error({
+          content: e.message,
+        })
+      })
     }
   }, { immediate: true })
 
@@ -62,11 +68,26 @@ export function useSocket(messageContainer: Ref<HTMLDivElement | undefined>) {
     }
   }
 
+  function sendAttach(serverId: string, channelId: string, files: Attachment[], content?: string) {
+    if (socket.value) {
+      socket.value.emit(
+        'send',
+        { type: 1, attachments: files, content },
+        serverId,
+        channelId,
+      )
+    }
+    else {
+      consola.error('No socket')
+    }
+  }
+
   return {
     connected,
     socket,
     messages,
 
     sendText,
+    sendAttach,
   }
 }

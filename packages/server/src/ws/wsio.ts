@@ -7,7 +7,7 @@ import { secretKey } from '../consts'
 import { findUser } from '../router/modules/user'
 import { setOnline } from '../router/modules/server'
 import { findChannel, sendMsg } from '../router/modules/channel'
-import { apiKey, arcKey } from '../../__apiKey__'
+import { arcKey } from '../../__apiKey__'
 
 const config = new Configuration({
   apiKey: arcKey,
@@ -88,7 +88,7 @@ wss.on('connection', (socket) => {
         socket.to(serverId).emit('message', message)
         socket.emit('send-success', message)
 
-        if (message.content.includes('@ChatGPT')) {
+        if (message.content?.includes('@ChatGPT')) {
           const { data } = await openai.createChatCompletion({
             model: 'gpt-3.5-turbo',
             messages: [{
@@ -106,6 +106,7 @@ wss.on('connection', (socket) => {
       }
     }
     catch (e) {
+      socket.emit('send-fail', e)
     }
   })
 })

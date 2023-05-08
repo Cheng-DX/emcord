@@ -42,8 +42,8 @@ export async function formatMsg(
     embeds = [],
     referencedMessage,
   } = msg
-  if (msg.type === undefined || !msg.content)
-    throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
+  // if (msg.type === undefined || !msg.content)
+  //   throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
 
   if (referencedMessage) {
     const message = await MessageModel.findOne({

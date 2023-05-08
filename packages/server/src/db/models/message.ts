@@ -30,7 +30,7 @@ const EmbedSchemaSrc = {
 
 export const MessageSchemaSrc = {
   type: required(Number),
-  content: required(String),
+  content: String,
   channelId: required(String),
   author: required({
     userId: required(String),
