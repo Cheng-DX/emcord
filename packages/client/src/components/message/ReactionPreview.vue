@@ -5,49 +5,45 @@ const props = defineProps<{
   reaction: EmojiReaction
 }>()
 
-const { userInfo } = useUserInfo()
+const emits = defineEmits<{
+  (event: 'removeReaction', emoji: string): void
+}>()
 
+const { userInfo } = useUserInfo()
 const message = inject<Message>('message')!
 const hasMine = computed(() => props.reaction.users.includes(userInfo.value!.id))
 
 async function clickReaction() {
   if (hasMine.value)
-    removeReaction(props.reaction.emoji.id)
-  else
-    addReaction(props.reaction.emoji.id)
+    emits('removeReaction', props.reaction.emoji.id)
 }
 
 const { params } = toRefs(useRoute())
 async function addReaction(emoji: string) {
   const { id } = message
   const channelId = params.value.channelId as string
-  const msg = await useFetch(
+  const { data: msg } = await useFetch(
     `/api/channels/${channelId}/messages/${id}/reactions/${emoji}/@me`,
-  ).json<Message>()
+    { method: 'PUT' },
+  )
+    .json<Message>()
 
-  console.log(msg)
-}
-
-async function removeReaction(emoji: string) {
-  const { id } = message
-  const channelId = params.value.channelId as string
-  const msg = await useFetch(
-    `/api/channels/${channelId}/messages/${id}/reactions/${emoji}/@me`,
-    { method: 'DELETE' },
-  ).json<Message>()
-
-  console.log(msg)
+  if (!msg.value)
+    return
+  message.reactions.splice(0, message.reactions.length, ...msg.value.reactions)
 }
 </script>
 
 <template>
   <div
-    flex justify-between items-center bgc-theme-2
+    v-if="reaction.count > 0" flex justify-between items-center
+    bgc-theme-2
     class="reaction-container"
     :style="{
-      backgroundColor: hasMine ? '#4ba5f411' : '',
+      backgroundColor: hasMine ? '#4ba5f433' : '',
       borderColor: hasMine ? '#4ba5f466' : '',
     }"
+    @click="clickReaction"
   >
     <span>{{ reaction.emoji.id }}</span>
     <span>{{ reaction.count }}</span>

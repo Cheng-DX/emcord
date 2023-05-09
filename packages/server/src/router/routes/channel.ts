@@ -237,7 +237,7 @@ export function applyChannelReactions(router: Router) {
         if (reaction.users.includes(userId)) {
           // find the message with emoji.name in its reactions array and then update its count and users
           newMessage = await MessageModel.findOneAndUpdate({
-            'id': messageId,
+            '_id': messageId,
             'reactions.emoji.id': emoji,
           }, {
             $inc: {

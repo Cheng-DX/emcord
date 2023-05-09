@@ -11,6 +11,8 @@ import FileEditor from '~/components/files/FileEditor.vue'
 import type { LoadingFile } from '~/components/files/types'
 import { useMenu } from '~/composables/useMenu'
 import Selection from '~/components/selection/index.vue'
+import type { Option } from '~/components/selection/types'
+import EmojiPicker from '~/components/message/EmojiPicker.vue'
 
 const { params } = toRefs(useRoute())
 
@@ -118,10 +120,121 @@ function onRemoveAttach(id: string, url: string) {
   })
 }
 
+const showEmojiPicker = ref(false)
+const emoji = ref('')
+
+const i = () => {}
 const { current, toggleVisible, onClickItem, position, visible } = useMenu<Message>()
+const messageMenuOptions: Option[] = [
+  {
+    label: '添加反应',
+    icon: 'i-ic-baseline-emoji-emotions',
+    value: 'add-reaction',
+    type: 'success',
+    onClick: () => {
+      toggleVisible(false)
+      showEmojiPicker.value = true
+    },
+  },
+  { label: '编辑信息', icon: 'i-ic-baseline-edit', value: 'edit', onClick: i },
+  { label: '回复', icon: 'i-ic-baseline-reply', value: 'reply', onClick: i },
+  {
+    label: '删除信息',
+    icon: 'i-ic-baseline-delete-forever',
+    value: 'remove',
+    type: 'danger',
+    onClick: () => {
+      dialog.error({
+        title: '确定要删除这条消息吗',
+        content: () => h(MessageCard, {
+          message: current.value!,
+          style: {
+            'marginBlock': '25px',
+            'box-shadow': 'rgba(0, 0, 0, 0.15) 0px 2px 2px 0px !important',
+          },
+        }),
+        style: {
+          width: '80vw',
+        },
+        transformOrigin: 'center',
+        positiveText: '删除',
+        positiveButtonProps: {
+          type: 'error',
+        },
+        onPositiveClick: async () => {
+          try {
+            const channelId = params.value.channelId as string
+            await useFetch(
+              `/api/channels/${channelId}/messages/${current.value!.id}`,
+              { method: 'DELETE' },
+            ).json()
+            messages.value = messages.value.filter(
+              (msg) => msg.id !== current.value!.id,
+            )
+          }
+          catch (e: any) {
+            notification.error({
+              title: 'Error',
+              content: e.message,
+            })
+          }
+        },
+        negativeText: '取消',
+        negativeButtonProps: {
+          type: 'tertiary',
+        },
+      })
+    },
+  },
+]
+
+async function addReaction(emoji: string) {
+  const { id } = current.value!
+  const channelId = params.value.channelId as string
+  const { data: msg } = await useFetch(
+    `/api/channels/${channelId}/messages/${id}/reactions/${emoji}/@me`,
+    { method: 'PUT' },
+  ).json<Message>()
+  replaceMsg(msg.value)
+}
+
+async function onRemoveReaction(id: string, emoji: string) {
+  const channelId = params.value.channelId as string
+  const { data: msg } = await useFetch(
+    `/api/channels/${channelId}/messages/${id}/reactions/${emoji}/@me`,
+    { method: 'DELETE' },
+  ).json<Message>()
+  replaceMsg(msg.value)
+}
+
+function replaceMsg(msg: Message | null) {
+  if (!msg)
+    return
+  const index = messages.value.findIndex((m) => m.id === msg.id)
+  if (index !== -1)
+    messages.value.splice(index, 1, msg)
+}
+
+async function onReactionSelected(emoji: string) {
+  showEmojiPicker.value = false
+  await addReaction(emoji)
+}
 </script>
 
 <template>
+  <div
+    v-if="showEmojiPicker"
+    absolute
+    :style="{
+      top: '25vh',
+      right: '20px',
+      zIndex: 3001,
+    }"
+  >
+    <OnClickOutside @trigger="showEmojiPicker = false">
+      <EmojiPicker v-model="emoji" @first-select="onReactionSelected" />
+    </OnClickOutside>
+  </div>
   <div min-w-50vw h-full>
     <header
       h-24px
@@ -209,7 +322,7 @@ const { current, toggleVisible, onClickItem, position, visible } = useMenu<Messa
             :y="position.y"
             style="transform: translateX(50%);"
           >
-            <Selection :options="[]" />
+            <Selection :options="messageMenuOptions" />
           </NPopover>
         </OnClickOutside>
         <div ref="messageContainer" w-full flex-1 style="overflow: auto;">
@@ -219,6 +332,7 @@ const { current, toggleVisible, onClickItem, position, visible } = useMenu<Messa
             :message="message"
             wp-80
             @remove-attach="onRemoveAttach"
+            @remove-reaction="onRemoveReaction"
             @click.right="(e: MouseEvent) => onClickItem(e, message)"
           />
           <div mt-10px />

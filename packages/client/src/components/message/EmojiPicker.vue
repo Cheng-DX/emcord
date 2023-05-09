@@ -7,9 +7,17 @@ defineProps<{
 }>()
 const emits = defineEmits<{
   (event: 'update:modelValue', value: string): void
+  (event: 'firstSelect', value: string): void
 }>()
+
+let isFirst = true
 function selectEmoji(event: any) {
-  emits('update:modelValue', event.i)
+  const emoji = event.i as string
+  if (isFirst) {
+    isFirst = false
+    emits('firstSelect', emoji)
+  }
+  emits('update:modelValue', emoji)
 }
 </script>
 
@@ -24,7 +32,7 @@ function selectEmoji(event: any) {
         hasSearch: true,
         hasGroupNames: false,
         stickyGroupNames: false,
-        hasSkinTones: true,
+        hasSkinTones: false,
         recentRecords: true,
       }"
       @select="selectEmoji"
@@ -33,6 +41,9 @@ function selectEmoji(event: any) {
 </template>
 
 <style scoped>
+.container {
+  box-shadow: rgba(2,2,2,0.15)  0px 0px 0px 1px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px !important;
+}
 .container >>> .emoji-header {
   font-size: 14px;
 }

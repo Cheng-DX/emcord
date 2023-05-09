@@ -9,12 +9,16 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   (event: 'removeAttach', id: string, url: string): void
+  (event: 'removeReaction', id: string, emoji: string): void
 }>()
 
 provide('message', props.message)
 const { author, content, timestamp } = toRefs(props.message)
 function remove(url: string) {
   emits('removeAttach', props.message.id, url)
+}
+function removeReaction(emoji: string) {
+  emits('removeReaction', props.message.id, emoji)
 }
 </script>
 
@@ -47,23 +51,31 @@ function remove(url: string) {
       <div class="text">
         {{ content }}
       </div>
-      <FilePreviewer
-        v-for="file in message.attachments"
-        :key="file.url"
-        :file="file"
-        :removable="message.attachments.length > 1"
-        @remove="remove"
-      />
-      <EmbedPreview
-        v-for="embed in message.embeds"
-        :key="embed.link"
-        :embed="embed"
-      />
-      <ReactionPreview
-        v-for="reaction in message.reactions"
-        :key="reaction.emoji.id"
-        :reaction="reaction"
-      />
+      <div v-if="message.attachments.length > 0" gap-4px m-block-8px>
+        <FilePreviewer
+          v-for="file in message.attachments"
+          :key="file.url"
+          m-block-8px
+          :file="file"
+          :removable="message.attachments.length > 1"
+          @remove="remove"
+        />
+      </div>
+      <div v-if="message.embeds.length > 0" flex gap-4px m-block-8px>
+        <EmbedPreview
+          v-for="embed in message.embeds"
+          :key="embed.link"
+          :embed="embed"
+        />
+      </div>
+      <div v-if="message.reactions.length > 0" flex gap-4px m-block-4px>
+        <ReactionPreview
+          v-for="reaction in message.reactions"
+          :key="reaction.emoji.id"
+          :reaction="reaction"
+          @remove-reaction="removeReaction"
+        />
+      </div>
     </main>
   </div>
 </template>
