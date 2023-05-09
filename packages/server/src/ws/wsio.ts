@@ -6,7 +6,7 @@ import { Configuration, OpenAIApi } from 'openai'
 import { secretKey } from '../consts'
 import { findUser } from '../router/modules/user'
 import { setOnline } from '../router/modules/server'
-import { findChannel, sendMsg } from '../router/modules/channel'
+import { editMsg, findChannel, sendMsg } from '../router/modules/channel'
 import { arcKey } from '../../__apiKey__'
 
 const config = new Configuration({
@@ -107,6 +107,23 @@ wss.on('connection', (socket) => {
     }
     catch (e) {
       socket.emit('send-fail', e)
+    }
+  })
+
+  socket.on('edit', async (msg, serverId, channelId, messageId) => {
+    try {
+      if (info.authed) {
+        await findChannel(channelId, {
+          premission: 'MEMBER',
+          userId: info.auth!.userId,
+        })
+        const message = await editMsg(msg, channelId, messageId, info.auth!)
+        socket.to(serverId).emit('message', message)
+        socket.emit('edit-success', message)
+      }
+    }
+    catch (e) {
+      socket.emit('edit-fail', e)
     }
   })
 })

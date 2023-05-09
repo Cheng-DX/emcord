@@ -84,11 +84,12 @@ export default defineConfig({
       scale: 1.2,
       warn: true,
       collections: {
-        carbon: () =>
+        'carbon': () =>
           import('@iconify-json/carbon/icons.json').then(i => i.default as any),
-        ic: () => import('@iconify-json/ic/icons.json').then(i => i.default as any),
-        heroicons: () => import('@iconify-json/heroicons/icons.json').then(i => i.default as any),
-        octicon: () => import('@iconify-json/octicon/icons.json').then(i => i.default as any),
+        'ic': () => import('@iconify-json/ic/icons.json').then(i => i.default as any),
+        'heroicons': () => import('@iconify-json/heroicons/icons.json').then(i => i.default as any),
+        'octicon': () => import('@iconify-json/octicon/icons.json').then(i => i.default as any),
+        'vscode-icons': () => import('@iconify-json/vscode-icons/icons.json').then(i => i.default as any),
       },
     }),
     presetWebFonts({

@@ -37,7 +37,7 @@ export async function formatMsg(
 ) {
   const {
     type,
-    content,
+    content = '',
     attachments = [],
     embeds = [],
     referencedMessage,
@@ -59,7 +59,6 @@ export async function formatMsg(
 
   // parse mentions
   const mentions = content!.match(/<@(\w+)>/g)
-
   const mentionedUsers = Array.from(
     new Set(mentions?.map((mention) => mention.replace(/<@/, '').replace('>', '')) || []),
   )
@@ -94,5 +93,36 @@ export async function formatMsg(
 export async function sendMsg(msg: Partial<Message>, channelId: string, auth: TokenPayload) {
   const formattedMsg = await formatMsg(msg, channelId, auth)
   const message = await MessageModel.create(formattedMsg)
+  return message
+}
+
+export async function editMsg(msg: Partial<Message>, channelId: string, messageId: string, auth: TokenPayload) {
+  const {
+    content,
+    attachments,
+    embeds,
+    mentions,
+    mentionEveryone,
+  } = await formatMsg(msg, channelId, auth)
+
+  const _ = await MessageModel.findById({
+    _id: messageId,
+  })
+  if (!_)
+    throw new CustomError('INVALID_IDENTITY')
+  if (_.author.userId !== auth.userId)
+    throw new CustomError('PERMISSION_DENIED')
+
+  const message = await MessageModel.findByIdAndUpdate(messageId, {
+    content,
+    attachments,
+    embeds,
+    mentions,
+    mentionEveryone,
+  }, { new: true })
+
+  if (!message)
+    throw new CustomError('PERMISSION_DENIED')
+
   return message
 }

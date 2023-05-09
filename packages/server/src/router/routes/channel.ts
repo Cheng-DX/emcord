@@ -1,7 +1,7 @@
 import type { Router } from 'express'
 import { CustomError, err, getAuth, ok } from '../../utils'
 import { MessageModel, UserModel } from '../../db/models'
-import { findChannel, formatMsg, sendMsg } from '../modules/channel'
+import { editMsg, findChannel, sendMsg } from '../modules/channel'
 
 export function applyChannelMessage(router: Router) {
   router.get('/channels/:id/messages', async (req, res) => {
@@ -72,34 +72,7 @@ export function applyChannelMessage(router: Router) {
         premission: 'MEMBER',
         userId: auth.userId,
       })
-
-      const {
-        content,
-        attachments,
-        embeds,
-        mentions,
-        mentionEveryone,
-      } = await formatMsg(msg, id, auth)
-
-      const _ = await MessageModel.findById({
-        _id: messageId,
-      })
-      if (!_)
-        throw new CustomError('INVALID_IDENTITY')
-      if (_.author.userId !== auth.userId)
-        throw new CustomError('PERMISSION_DENIED')
-
-      const message = await MessageModel.findByIdAndUpdate(messageId, {
-        content,
-        attachments,
-        embeds,
-        mentions,
-        mentionEveryone,
-      }, { new: true })
-
-      if (!message)
-        throw new CustomError('PERMISSION_DENIED')
-
+      const message = await editMsg(msg, id, messageId, auth)
       ok(res, message)
     }
     catch (e: any) {
