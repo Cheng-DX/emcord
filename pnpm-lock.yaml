@@ -40,6 +40,7 @@ importers:
       '@iconify-json/heroicons': ^1.1.10
       '@iconify-json/ic': ^1.1.10
       '@iconify-json/octicon': ^1.1.37
+      '@iconify-json/vscode-icons': ^1.1.25
       '@types/crypto-js': ^4.1.1
       '@types/node': ^18.14.0
       '@unocss/preset-icons': ^0.47.6
@@ -69,6 +70,7 @@ importers:
     dependencies:
       '@iconify-json/heroicons': 1.1.10
       '@iconify-json/octicon': 1.1.37
+      '@iconify-json/vscode-icons': 1.1.25
       '@uppy/core': 3.2.0
       '@uppy/xhr-upload': 3.2.0_@uppy+core@3.2.0
       '@vueuse/components': 9.13.0_vue@3.2.47
@@ -1753,6 +1755,12 @@ packages:
 
   /@iconify-json/octicon/1.1.37:
     resolution: {integrity: sha512-Sg0+NzJuFT9EiTHzrwmbJPOmU2mLQ0g0c1Q6lpwIK+XirQ7zePGdWKqB6A4Cey1RTxVN4ny55c9+3+d3Bb+hMw==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: false
+
+  /@iconify-json/vscode-icons/1.1.25:
+    resolution: {integrity: sha512-TA4NuBffMLHlAAZ2URBtPy39+SuO35ThjUvaaUrd8+/KYijIUAU5prHW8j+EGVtajFZl+DT1TxAVdOXpijuFSg==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: false

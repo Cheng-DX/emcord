@@ -10,7 +10,7 @@ function onFinish(_: any) {
   const target = _.event.target as XMLHttpRequest
   const name = _.file.name
   const response = JSON.parse(target.responseText)
-  const { resource_type, byte, width, height, secure_url } = response
+  const { resource_type, bytes, width, height, secure_url } = response
   let type: AttachmentType
   switch (resource_type) {
     case 'image':
@@ -34,7 +34,7 @@ function onFinish(_: any) {
     status: 'done',
     url: secure_url,
     type,
-    size: byte,
+    size: bytes,
     width,
     height,
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NInput, NPopover } from 'naive-ui'
-import type { Attachment, Channel, Message, Server } from '@emcord/types'
+import { NInput, NPopover, NTooltip } from 'naive-ui'
+import type { Channel, Message, Server } from '@emcord/types'
 import type { Ref } from 'vue'
 import MessageCard from '~/components/MessageCard.vue'
 import ServerUsers from '~/components/ServerUsers.vue'
@@ -22,15 +22,21 @@ const channel = computed(() => {
   }
 })
 
-const messageContainer = ref<HTMLDivElement>()
-const { messages, sendText, sendAttach } = useSocket(messageContainer)
 const msg = ref('')
-
 const { data } = useFetch(
   () => `/api/channels/${params.value.channelId}/messages?limit=20`, {
     refetch: true,
   },
 ).json<Message[]>()
+
+const {
+  messages,
+  sendText,
+  sendAttach,
+  editMessage,
+  removeAttachment,
+  messageContainer,
+} = useSocket()
 
 const files = ref<LoadingFile[]>([])
 provide('files', files)
@@ -38,7 +44,7 @@ function onRemove(url: string) {
   files.value = files.value.filter((file) => file.url !== url)
 }
 
-watch(data, (n) => {
+watch(data, n => {
   if (n)
     messages.value = n.reverse()
 })
@@ -50,13 +56,12 @@ function send() {
   const serverId = params.value.serverId as string
   const channelId = params.value.channelId as string
 
-  if (hasAttachment.value) {
-    sendAttach(serverId, channelId, files.value, msg.value)
+  if (hasAttachment.value && files.value.some((file) => file.status === 'done')) {
+    sendAttach(serverId, channelId, files.value.filter(file => file.status === 'done'), msg.value)
     files.value = []
     msg.value = ''
-    return
   }
-  if (msg.value) {
+  else if (msg.value) {
     sendText(serverId, channelId, msg.value)
     msg.value = ''
   }
@@ -80,6 +85,35 @@ watch(query, (newQuery, old) => {
   if (old && !newQuery)
     toggleShowSearch(false)
 })
+
+function onRemoveAttach(id: string, url: string) {
+  dialog.error({
+    title: '确定吗？',
+    content: '永久移除该附件',
+    transformOrigin: 'center',
+    positiveText: '移除',
+    positiveButtonProps: {
+      type: 'error',
+    },
+    onPositiveClick: () => {
+      const serverId = params.value.serverId as string
+      const channelId = params.value.channelId as string
+      const msg = messages.value.find((msg) => msg.id === id)
+      if (!msg) {
+        notification.error({
+          title: 'Error',
+          content: 'Message not found',
+        })
+        return
+      }
+      removeAttachment(serverId, channelId, id, msg, url)
+    },
+    negativeText: '取消',
+    negativeButtonProps: {
+      type: 'tertiary',
+    },
+  })
+}
 </script>
 
 <template>
@@ -161,6 +195,7 @@ watch(query, (newQuery, old) => {
             :key="message.id"
             :message="message"
             wp-80
+            @remove-attach="onRemoveAttach"
           />
           <div mt-10px />
         </div>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Attachment } from '@emcord/types'
 import type { Ref } from 'vue'
 import { NProgress } from 'naive-ui'
 import type { LoadingFile } from './types'
@@ -37,12 +36,16 @@ const logo = computed(() => {
       <NProgress
         :percentage="file.progress"
         indicator-placement="inside"
+        :show-indicator="file.status === 'uploading'"
         :processing="file.status === 'uploading'"
+        :status="file.status === 'error' ? 'error' : 'success'"
+        :stroke-width="1"
       />
     </div>
     <div hp-20 text-3 c-text-2 flex items-center class="i">
       <span>
         {{ file.filename }}
+        {{ file.status === 'error' ? '上传失败' : '' }}
       </span>
     </div>
   </div>

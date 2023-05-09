@@ -6,10 +6,12 @@ const props = defineProps<{
   message: Message
 }>()
 
+const emits = defineEmits<{
+  (event: 'removeAttach', id: string, url: string): void
+}>()
 const { author, content, timestamp } = toRefs(props.message)
-
 function remove(url: string) {
-  console.log(url)
+  emits('removeAttach', props.message.id, url)
 }
 </script>
 
@@ -43,9 +45,10 @@ function remove(url: string) {
         {{ content }}
       </div>
       <FilePreviewer
-        v-for="file in props.message.attachments"
+        v-for="file in message.attachments"
         :key="file.url"
         :file="file"
+        :removable="message.attachments.length > 1"
         @remove="remove"
       />
     </main>
@@ -68,5 +71,6 @@ function remove(url: string) {
   line-height: 1.5rem;
   word-wrap: break-word;
   user-select: text;
+  padding-block: 4px;
 }
 </style>
