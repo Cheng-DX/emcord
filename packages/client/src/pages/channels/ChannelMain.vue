@@ -2,12 +2,15 @@
 import { NInput, NPopover, NTooltip } from 'naive-ui'
 import type { Channel, Message, Server } from '@emcord/types'
 import type { Ref } from 'vue'
-import MessageCard from '~/components/MessageCard.vue'
+import { OnClickOutside } from '@vueuse/components'
+import MessageCard from '~/components/message/MessageCard.vue'
 import ServerUsers from '~/components/ServerUsers.vue'
 import SearchResult from '~/components/SearchResult.vue'
 import FileUploader from '~/components/files/FileUploader.vue'
 import FileEditor from '~/components/files/FileEditor.vue'
 import type { LoadingFile } from '~/components/files/types'
+import { useMenu } from '~/composables/useMenu'
+import Selection from '~/components/selection/index.vue'
 
 const { params } = toRefs(useRoute())
 
@@ -114,6 +117,8 @@ function onRemoveAttach(id: string, url: string) {
     },
   })
 }
+
+const { current, toggleVisible, onClickItem, position, visible } = useMenu<Message>()
 </script>
 
 <template>
@@ -189,6 +194,24 @@ function onRemoveAttach(id: string, url: string) {
         style="width: calc(100% - 320px)"
         h-full
       >
+        <OnClickOutside @trigger="toggleVisible(false)">
+          <NPopover
+            trigger="manual"
+            :show="visible"
+            :show-arrow="false"
+            :style="{
+              width: '200px',
+              padding: '6px 8px',
+              background: 'var(--c-theme-0)',
+            }"
+            placement="bottom"
+            :x="position.x"
+            :y="position.y"
+            style="transform: translateX(50%);"
+          >
+            <Selection :options="[]" />
+          </NPopover>
+        </OnClickOutside>
         <div ref="messageContainer" w-full flex-1 style="overflow: auto;">
           <MessageCard
             v-for="message in messages"
@@ -196,6 +219,7 @@ function onRemoveAttach(id: string, url: string) {
             :message="message"
             wp-80
             @remove-attach="onRemoveAttach"
+            @click.right="(e: MouseEvent) => onClickItem(e, message)"
           />
           <div mt-10px />
         </div>

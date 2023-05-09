@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { Message } from '@emcord/types'
-import FilePreviewer from './files/FilePreviewer.vue'
+import FilePreviewer from './FilePreviewer.vue'
+import EmbedPreview from './EmbedPreview.vue'
+import ReactionPreview from './ReactionPreview.vue'
 
 const props = defineProps<{
   message: Message
 }>()
-
 const emits = defineEmits<{
   (event: 'removeAttach', id: string, url: string): void
 }>()
+
+provide('message', props.message)
 const { author, content, timestamp } = toRefs(props.message)
 function remove(url: string) {
   emits('removeAttach', props.message.id, url)
@@ -50,6 +53,16 @@ function remove(url: string) {
         :file="file"
         :removable="message.attachments.length > 1"
         @remove="remove"
+      />
+      <EmbedPreview
+        v-for="embed in message.embeds"
+        :key="embed.link"
+        :embed="embed"
+      />
+      <ReactionPreview
+        v-for="reaction in message.reactions"
+        :key="reaction.emoji.id"
+        :reaction="reaction"
       />
     </main>
   </div>

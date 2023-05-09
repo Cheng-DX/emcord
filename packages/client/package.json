@@ -26,7 +26,8 @@
     "socket.io-client": "^4.6.1",
     "uppy": "^3.9.0",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-twemoji-picker-final": "^0.0.15"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.0",

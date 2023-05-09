@@ -88,7 +88,7 @@ function getIcon(url: string) {
     />
     <div v-else-if="shouldPreview" bgc-2a2d31 p-block-8px w-full p-inline-6px r-10>
       <div
-        overflow-auto w-full
+        overflow-auto w-full min-h-80px
         :style="{
           maxHeight: expended ? '150vh' : '150px',
         }"
@@ -131,7 +131,7 @@ function getIcon(url: string) {
     </div>
     <div v-else flex items-center justify-start h-80px gap-10px class="default-card">
       <div :class="getIcon(file.url)" s-65px ml-5px />
-      <div style="color: #4ba5f4" ml-5px>
+      <div c-4ba5f4 ml-5px>
         <div>{{ file.filename }}</div>
         <span v-if="file.size" c-change-3 text-2>
           {{ normalizeSize(file.size) }}
