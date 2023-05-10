@@ -1,4 +1,5 @@
 import type { Message, TokenPayload } from '@emcord/types'
+import { getLinkPreview } from 'link-preview-js'
 import { CustomError, isValidMessage } from '../../utils'
 import { ChannelModel, MessageModel, UserModel } from '../../db/models'
 import { findServer } from './server'
@@ -69,7 +70,6 @@ export async function formatMsg(
       },
     })
     .select('-servers')
-
   const mentionEveryone = content!.includes('@everyone')
 
   return {

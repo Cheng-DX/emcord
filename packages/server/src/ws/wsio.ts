@@ -1,8 +1,9 @@
 import { Server } from 'socket.io'
 import { verify } from 'jsonwebtoken'
-import type { TokenPayload, User } from '@emcord/types'
+import type { Embed, TokenPayload, User } from '@emcord/types'
 import consola from 'consola'
 import { Configuration, OpenAIApi } from 'openai'
+import { getLinkPreview, getPreviewFromContent } from 'link-preview-js'
 import { secretKey } from '../consts'
 import { findUser } from '../router/modules/user'
 import { setOnline } from '../router/modules/server'
@@ -86,7 +87,7 @@ wss.on('connection', (socket) => {
         })
         const message = await sendMsg(msg, channelId, info.auth!)
         socket.to(serverId).emit('message', message)
-        socket.emit('send-success', message)
+        socket.emit('send-success', message, serverId)
 
         if (message.content?.includes('@ChatGPT')) {
           const { data } = await openai.createChatCompletion({
@@ -103,6 +104,20 @@ wss.on('connection', (socket) => {
             socket.emit('send-success', msg)
           }
         }
+
+        if (message.content?.includes('http')) {
+          const { id, content, mentions, reactions, attachments } = message as Message
+          const embeds = await generateEmbeds(serverId, channelId, id, content)
+          const r = await editMsg({
+            type: 0,
+            embeds,
+            content,
+            mentions,
+            reactions,
+            attachments,
+          }, channelId, id, info.auth!)
+          socket.emit('edit-success', r, serverId)
+        }
       }
     }
     catch (e) {
@@ -118,14 +133,31 @@ wss.on('connection', (socket) => {
           userId: info.auth!.userId,
         })
         const message = await editMsg(msg, channelId, messageId, info.auth!)
-        socket.to(serverId).emit('message', message)
-        socket.emit('edit-success', message)
+        socket.emit('edit-success', message, serverId)
       }
     }
     catch (e) {
       socket.emit('edit-fail', e)
     }
   })
+
+  async function generateEmbeds(serverId: string, channelId: string, messageId: string, content: string) {
+    const embeds: Embed[] = []
+    const urls = content.match(/https?:\/\/[^\s]+/g)
+    if (urls) {
+      const rs = await Promise.all(urls.map(async url => {
+        const { title = '', description = '', images = [''] } = await getLinkPreview(url) as any
+        return {
+          title,
+          description,
+          link: url,
+          image: images[0],
+        }
+      }))
+      embeds.push(...rs)
+    }
+    return embeds
+  }
 })
 
 wss.listen(9527)

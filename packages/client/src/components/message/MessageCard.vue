@@ -61,7 +61,7 @@ function removeReaction(emoji: string) {
           @remove="remove"
         />
       </div>
-      <div v-if="message.embeds.length > 0" flex gap-4px m-block-8px>
+      <div v-if="message.embeds.length > 0" flex flex-col gap-4px m-block-8px>
         <EmbedPreview
           v-for="embed in message.embeds"
           :key="embed.link"

@@ -13,7 +13,9 @@ export interface User {
   profile?: string
 }
 
-export type UserPreview = Omit<User, 'servers'>
+export type UserPreview = Omit<User, 'servers'> & {
+  userId: string
+}
 
 export interface Channel {
   id: string

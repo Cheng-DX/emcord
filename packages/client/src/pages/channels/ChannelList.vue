@@ -8,8 +8,8 @@ import type { Option } from '~/components/selection/types'
 import AddChannel from '~/components/AddChannel.vue'
 
 const props = defineProps<{
-  channels: Channel[] | null
-  server: Server | null
+  channels?: Channel[]
+  server?: Server
 }>()
 
 const emits = defineEmits<{

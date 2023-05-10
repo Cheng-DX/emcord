@@ -16,7 +16,7 @@ import hljs from 'highlight.js/lib/common'
     c-text-2
   >
     <NDialogProvider>
-      <NMessageProvider style="height: auto;" placement="bottom-right">
+      <NMessageProvider placement="bottom-right">
         <router-view v-slot="{ Component }">
           <keep-alive>
             <component :is="Component" />

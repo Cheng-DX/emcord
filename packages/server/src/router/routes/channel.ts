@@ -90,7 +90,7 @@ export function applyChannelMessage(router: Router) {
       })
 
       const message = await MessageModel.findOneAndDelete({
-        'id': messageId,
+        '_id': messageId,
         'author.userId': auth.userId,
       }, { new: true })
       ok(res, message)

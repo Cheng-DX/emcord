@@ -31,6 +31,8 @@ export function useUserInfo() {
     }
   }
 
+  const userId = computed(() => userInfo.value?.id)
+
   watch(ls, () => {
     try {
       const castedUser = JSON.parse(ls.value)
@@ -45,6 +47,7 @@ export function useUserInfo() {
     userInfo,
     hasUserInfo,
     setUserInfo,
+    userId,
     userOverview,
   }
 }
