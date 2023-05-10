@@ -156,6 +156,7 @@ function getIcon(url: string) {
 .container:hover > .toolbox {
   visibility: visible;
 }
+
 .border-top {
   border-top: #615f5f96 0.1px solid;
 }
@@ -173,6 +174,7 @@ function getIcon(url: string) {
   font-size: 14px;
   line-height: 1.5;
   font-family: 'Noto Sans Mono', monospace;
+  user-select: text;
 }
 .tool {
   width: 18px;

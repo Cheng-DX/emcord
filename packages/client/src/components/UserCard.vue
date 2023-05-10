@@ -21,7 +21,7 @@ const props = defineProps<{
     <div mr-12px h-32px>
       <img :src="user.avator" r-50 s-32px>
     </div>
-    <span font-500 text-16px>
+    <span font-500 text-4>
       {{ user.name }}
     </span>
   </div>

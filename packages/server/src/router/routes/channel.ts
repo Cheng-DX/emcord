@@ -134,7 +134,7 @@ export function applyChannelPins(router: Router) {
       })
       const messages = await MessageModel
         .findOneAndUpdate({
-          id: messageId,
+          _id: messageId,
           channelId: id,
         }, { pinned: true }, { new: true })
 
@@ -155,7 +155,7 @@ export function applyChannelPins(router: Router) {
       })
       const messages = await MessageModel
         .findOneAndUpdate({
-          id: messageId,
+          _id: messageId,
           channelId: id,
         }, { pinned: false }, { new: true })
 

@@ -10,10 +10,11 @@ const url = computed(() => new URL(props.embed.link))
 function goto() {
   window.open(url.value.href, '_blank')
 }
+const imageFailed = ref(false)
 </script>
 
 <template>
-  <div bgc-theme-2 w-350px max-h-550px flex flex-col gap-4px p-block-4 p-inline-6 r-10>
+  <div bgc-theme-2 w-350px max-h-550px flex flex-col gap-4px p-block-8px p-inline-12px r-10>
     <span font-500 text-2 c-text-3-trans>{{ url.hostname }}</span>
     <span
       c-4ba5f4 text-4 cursor-pointer hover:underline font-400
@@ -26,14 +27,22 @@ function goto() {
     >
       {{ embed.description }}
     </div>
-    <img
-      v-if="embed.image"
+    <NImage
+      v-if="embed.image && !imageFailed"
       min-h-100px
       transition
       :src="embed.image"
-      onerror="this.style.display = 'none'"
+      style="width: 100%"
+      :img-props="{
+        style: {
+          objectFit: 'contain',
+          width: '100%',
+        },
+      }"
       r-6
-    >
+      w-full
+      @error="imageFailed = true"
+    />
   </div>
 </template>
 

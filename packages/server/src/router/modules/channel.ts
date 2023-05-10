@@ -46,13 +46,16 @@ export async function formatMsg(
   // if (msg.type === undefined || !msg.content)
   //   throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
 
+  let referencedMessagePreview = null
   if (referencedMessage) {
     const message = await MessageModel.findOne({
-      id: referencedMessage,
+      _id: referencedMessage,
       channelId,
     })
     if (!message)
       throw new CustomError('DENIED', 'You can\'t reference a message that doesn\'t exist in this channel')
+    else
+      referencedMessagePreview = message
   }
 
   if (!isValidMessage({ type, content, attachments, embeds, referencedMessage }))
@@ -86,7 +89,8 @@ export async function formatMsg(
     pinned: false,
     mentionEveryone,
     edited: false,
-    referencedMessage: '',
+    referencedMessage,
+    referencedMessagePreview,
   }
 }
 

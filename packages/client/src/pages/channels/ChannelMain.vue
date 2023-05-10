@@ -13,6 +13,7 @@ import { useMenu } from '~/composables/useMenu'
 import Selection from '~/components/selection/index.vue'
 import type { Option } from '~/components/selection/types'
 import EmojiPicker from '~/components/message/EmojiPicker.vue'
+import ReferedMessagePreview from '~/components/message/ReferedMessagePreview.vue'
 
 const { params } = toRefs(useRoute())
 
@@ -39,9 +40,9 @@ const {
   sendText,
   sendAttach,
   editMessage,
-  generateEmbeds,
   removeAttachment,
   messageContainer,
+  move,
 } = useSocket()
 
 const files = ref<LoadingFile[]>([])
@@ -51,27 +52,18 @@ function onRemove(url: string) {
 }
 
 watch(data, n => {
-  if (n)
+  if (n) {
     messages.value = n.reverse()
+    setTimeout(() => {
+      move(false)
+    }, 0)
+  }
 })
 
 const hasAttachment = computed(() => {
   return files.value.length > 0
 })
-function send() {
-  const serverId = params.value.serverId as string
-  const channelId = params.value.channelId as string
-
-  if (hasAttachment.value && files.value.some((file) => file.status === 'done')) {
-    sendAttach(serverId, channelId, files.value.filter(file => file.status === 'done'), msg.value)
-    files.value = []
-    msg.value = ''
-  }
-  else if (msg.value) {
-    sendText(serverId, channelId, msg.value)
-    msg.value = ''
-  }
-}
+const replyMode = ref(false)
 const showUsers = useLocalStorage('showUsers', false, {
   mergeDefaults: true,
 })
@@ -125,7 +117,9 @@ const showEmojiPicker = ref(false)
 const emoji = ref('')
 
 const i = () => {}
+const msgInput = ref<HTMLInputElement>()
 const { current, toggleVisible, onClickItem, position, visible } = useMenu<Message>()
+
 const messageMenuOptions: Option[] = [
   {
     label: '添加反应',
@@ -138,7 +132,15 @@ const messageMenuOptions: Option[] = [
     },
   },
   { label: '编辑信息', icon: 'i-ic-baseline-edit', value: 'edit', onClick: i },
-  { label: '回复', icon: 'i-ic-baseline-reply', value: 'reply', onClick: i },
+  {
+    label: '回复',
+    icon: 'i-ic-baseline-reply',
+    value: 'reply',
+    onClick: () => {
+      replyMode.value = true
+      msgInput.value?.focus()
+    },
+  },
   {
     label: '删除信息',
     icon: 'i-ic-baseline-delete-forever',
@@ -219,6 +221,26 @@ function replaceMsg(msg: Message | null) {
 async function onReactionSelected(emoji: string) {
   showEmojiPicker.value = false
   await addReaction(emoji)
+}
+
+function send() {
+  const serverId = params.value.serverId as string
+  const channelId = params.value.channelId as string
+  if (hasAttachment.value && files.value.some((file) => file.status === 'done')) {
+    sendAttach(
+      serverId, channelId, files.value.filter(file => file.status === 'done'),
+      msg.value,
+      (replyMode.value && current.value) ? current.value.id : undefined,
+    )
+    files.value = []
+    msg.value = ''
+  }
+  else if (msg.value) {
+    sendText(serverId, channelId, msg.value, (replyMode.value && current.value) ? current.value.id : undefined)
+    msg.value = ''
+  }
+
+  replyMode.value = false
 }
 </script>
 
@@ -331,7 +353,7 @@ async function onReactionSelected(emoji: string) {
             v-for="message in messages"
             :key="message.id"
             :message="message"
-            wp-80
+            w-full
             @remove-attach="onRemoveAttach"
             @remove-reaction="onRemoveReaction"
             @click.right="(e: MouseEvent) => onClickItem(e, message)"
@@ -350,6 +372,23 @@ async function onReactionSelected(emoji: string) {
               <FileEditor :file="file" @remove="onRemove" />
             </div>
           </div>
+          <ReferedMessagePreview
+            v-if="replyMode && current"
+            :show-bar="false"
+            :message="current"
+            p-block-10px p-inline-20px flex items-center m-block-2px bgc-theme-5 r-8
+          >
+            <template #prefix>
+              <span font-bold c-text-2 font-italic mr-2px>正在回复至</span>
+            </template>
+            <template #suffix>
+              <div
+                font-bold c-change-2 font-italic mr-2px s-24px
+                i-carbon-close-filled cursor-pointer
+                @click="replyMode = false"
+              />
+            </template>
+          </ReferedMessagePreview>
           <div w-full h-44px flex items-center bgc-theme-5 r-8>
             <div p-inline-16px p-block-10px>
               <FileUploader v-model="files">
@@ -358,6 +397,7 @@ async function onReactionSelected(emoji: string) {
             </div>
             <div p-block-11px pr-10px style="width: calc(100% - 40px)">
               <input
+                ref="msgInput"
                 v-model="msg"
                 transition
                 class="inner-input"

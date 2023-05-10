@@ -79,4 +79,5 @@ export interface Message {
   timestamp: Date
   edited: boolean
   referencedMessage?: string
+  referencedMessagePreview?: Message
 }

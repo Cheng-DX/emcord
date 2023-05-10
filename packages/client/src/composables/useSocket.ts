@@ -1,22 +1,20 @@
 import { type Socket, io } from 'socket.io-client'
 import consola from 'consola'
-import type { Attachment, Embed, Message } from '@emcord/types'
-import { getLinkPreview } from 'link-preview-js'
+import type { Attachment, Message } from '@emcord/types'
 
 const URL = 'http://localhost:9527'
 
 export function useSocket() {
   const [connected, toggle] = useToggle(false)
   const { token } = useToken()
-  const { userId } = useUserInfo()
   const socket = ref<Socket>()
   const messages = ref<Message[]>([])
   const messageContainer = ref<HTMLDivElement>()
 
-  function move() {
+  function move(smooth = true) {
     nextTick(() => {
       messageContainer.value?.scrollTo({
-        behavior: 'smooth',
+        behavior: smooth ? 'smooth' : 'auto',
         top: messageContainer.value.scrollHeight,
       })
     })
@@ -55,7 +53,7 @@ export function useSocket() {
       socket.value.emit('join', newToken)
 
       // send
-      socket.value.on('send-success', (message: Message, serverId: string) => {
+      socket.value.on('send-success', (message: Message) => {
         addMessage(message)
         // if (message.author.userId === userId.value && message.embeds.length === 0)
         // generateEmbeds(serverId, message.channelId, message.id, message.content)
@@ -78,11 +76,11 @@ export function useSocket() {
     }
   }, { immediate: true })
 
-  function sendText(serverId: string, channelId: string, content: string) {
+  function sendText(serverId: string, channelId: string, content: string, reply?: string) {
     if (socket.value) {
       socket.value.emit(
         'send',
-        { type: 0, content },
+        { type: 0, content, referencedMessage: reply },
         serverId,
         channelId,
       )
@@ -92,11 +90,11 @@ export function useSocket() {
     }
   }
 
-  function sendAttach(serverId: string, channelId: string, files: Attachment[], content?: string) {
+  function sendAttach(serverId: string, channelId: string, files: Attachment[], content?: string, reply?: string) {
     if (socket.value) {
       socket.value.emit(
         'send',
-        { type: 1, attachments: files, content },
+        { type: 1, attachments: files, content, referencedMessage: reply },
         serverId,
         channelId,
       )
@@ -121,35 +119,6 @@ export function useSocket() {
     }
   }
 
-  async function generateEmbeds(serverId: string, channelId: string, messageId: string, content: string) {
-    console.log('d')
-    if (socket.value) {
-      const embeds: Embed[] = []
-      const urls = content.match(/https?:\/\/[^\s]+/g)
-      console.log(urls)
-      if (urls) {
-        urls.forEach(async (url) => {
-          const { title = '', description = '', images = [''] } = await getLinkPreview(url) as any
-          embeds.push({
-            title,
-            description,
-            link: url,
-            image: images[0],
-          })
-        })
-      }
-      console.log(embeds)
-
-      editMessage(serverId, channelId, messageId, {
-        type: 0,
-        embeds,
-      })
-    }
-    else {
-      consola.error('No socket')
-    }
-  }
-
   function removeAttachment(serverId: string, channelId: string, messageId: string, msg: Message, url: string) {
     editMessage(serverId, channelId, messageId, {
       type: 1,
@@ -167,6 +136,6 @@ export function useSocket() {
     sendAttach,
     editMessage,
     removeAttachment,
-    generateEmbeds,
+    move,
   }
 }

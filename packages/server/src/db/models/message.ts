@@ -48,6 +48,7 @@ export const MessageSchemaSrc = {
   mentionEveryone: Boolean,
   edited: Boolean,
   referencedMessage: String,
+  referencedMessagePreview: Object,
 }
 
 export const MessageModel = model(
