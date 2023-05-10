@@ -54,7 +54,9 @@ function getIcon(url: string) {
 
 <template>
   <div
-    flex r-10 position-relative class="container" :style="{
+    flex r-10 position-relative
+    class="container"
+    :style="{
       maxWidth: file.type === 1 ? '350px' : '550px',
     }"
   >
@@ -88,9 +90,9 @@ function getIcon(url: string) {
     />
     <div v-else-if="shouldPreview" bgc-2a2d31 p-block-8px w-full p-inline-6px r-10>
       <div
-        overflow-auto w-full min-h-80px
+        overflow-auto w-full min-h-80px transition-all duration-300
         :style="{
-          maxHeight: expended ? '150vh' : '150px',
+          maxHeight: expended ? '80vh' : '150px',
         }"
       >
         <NSpin :show="!rawPreview" :rotate="false" w-full>
@@ -100,6 +102,7 @@ function getIcon(url: string) {
           <NCode
             :code="rawPreview"
             :language="file.filename.split('.').pop()"
+            show-line-numbers
             w-full
             class="code"
           />

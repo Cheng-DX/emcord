@@ -24,7 +24,7 @@ function removeReaction(emoji: string) {
 </script>
 
 <template>
-  <div>
+  <div class="message-container">
     <ReferedMessagePreview
       v-if="message.referencedMessagePreview"
       :message="message.referencedMessagePreview"
@@ -65,7 +65,7 @@ function removeReaction(emoji: string) {
             {{ new Date(timestamp).toLocaleTimeString() }}
           </span>
         </div>
-        <div class="text">
+        <div class="text" :class="message.edited ? 'edited' : ''">
           {{ content }}
         </div>
         <div v-if="message.attachments.length > 0" gap-4px m-block-8px>
@@ -99,6 +99,9 @@ function removeReaction(emoji: string) {
 </template>
 
 <style scoped>
+.message-container {
+  user-select: text;
+}
 .card {
   padding: 2px 48px 2px 20px;
   width: calc(100% - 68px);
@@ -114,5 +117,12 @@ function removeReaction(emoji: string) {
   word-wrap: break-word;
   user-select: text;
   padding-block: 4px;
+}
+.edited::after {
+  content: '(已编辑)';
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 4px;
+  color: var(--c-text-3-trans);
 }
 </style>
