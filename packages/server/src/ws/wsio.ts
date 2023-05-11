@@ -92,8 +92,8 @@ wss.on('connection', (socket) => {
 
         if (message.content?.includes('@ChatGPT') && message.content?.includes('/start')) {
           const rule = `你好，我是ChatGPT，可以和你聊天的机器人。我由OpenAI GPT-3.5驱动。我还在学习中，所以请对我有耐心。如果你有任何建议，请告诉我。
-你可以通过回复这条消息开始和我聊天，在此期间，我会记住你最近的十条消息。
-你也可以在任何频道中提及我并发送/start，开始新的对话。`
+你可以通过回复这条消息开始和我聊天，在此期间，我仅会记住你最近的十条消息。
+你也可以在任何频道中提及我并发送/start来开始新的对话。`
           const msg = await sendMsg({ type: 0, content: rule, referencedMessage: message.id }, channelId, openaiPayload)
 
           setTimeout(() => {
@@ -173,11 +173,13 @@ wss.on('connection', (socket) => {
     if (urls) {
       const rs = await Promise.all(urls.map(async url => {
         const { title = '', description = '', images = [''] } = await getLinkPreview(url) as any
+        let img = images[0] as string
+
         return {
           title,
           description,
           link: url,
-          image: images[0],
+          image: img,
         }
       }))
       embeds.push(...rs)
