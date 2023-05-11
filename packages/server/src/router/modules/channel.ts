@@ -1,4 +1,4 @@
-import type { Message, TokenPayload } from '@emcord/types'
+import type { Message, ReferencedMessagePreview, TokenPayload } from '@emcord/types'
 import { getLinkPreview } from 'link-preview-js'
 import { CustomError, isValidMessage } from '../../utils'
 import { ChannelModel, MessageModel, UserModel } from '../../db/models'
@@ -47,16 +47,21 @@ export async function formatMsg(
   // if (msg.type === undefined || !msg.content)
   //   throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
 
-  let referencedMessagePreview = null
+  let referencedMessagePreview: ReferencedMessagePreview
   if (referencedMessage) {
     const message = await MessageModel.findOne({
       _id: referencedMessage,
       channelId,
     })
-    if (!message)
-      throw new CustomError('DENIED', 'You can\'t reference a message that doesn\'t exist in this channel')
-    else
-      referencedMessagePreview = message
+    if (!message) { throw new CustomError('DENIED', 'You can\'t reference a message that doesn\'t exist in this channel') }
+    else {
+      referencedMessagePreview = {
+        author: message.author as any,
+        content: message.content as any,
+        referencedMessage: message.referencedMessage,
+        referencedMessagePreview: message.referencedMessagePreview,
+      }
+    }
   }
 
   if (!isValidMessage({ type, content, attachments, embeds, referencedMessage }))
