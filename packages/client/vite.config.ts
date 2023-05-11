@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import UnoCSS from 'unocss/vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
+import Inspect from 'vite-plugin-inspect'
 
 export default defineConfig({
   server: {
@@ -17,6 +18,7 @@ export default defineConfig({
   plugins: [
     vue(),
     UnoCSS(),
+    Inspect(),
     AutoImport({
       include: [
         /\.[tj]sx?$/,

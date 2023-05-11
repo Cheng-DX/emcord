@@ -44,10 +44,10 @@ function selectEmoji(event: any) {
 .container {
   box-shadow: rgba(2,2,2,0.15)  0px 0px 0px 1px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px !important;
 }
-.container >>> .emoji-header {
+.container :deep(.emoji-header) {
   font-size: 14px;
 }
-.container >>> .emoji-footer {
+.container :deep(.emoji-footer) {
   font-size: 14px;
 }
 </style>
