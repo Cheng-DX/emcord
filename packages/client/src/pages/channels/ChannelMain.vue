@@ -255,7 +255,7 @@ function send() {
     }"
   >
     <OnClickOutside @trigger="showEmojiPicker = false">
-      <EmojiPicker v-model="emoji" @first-select="onReactionSelected" />
+      <EmojiPicker v-model:emoji="emoji" @first-select="onReactionSelected" />
     </OnClickOutside>
   </div>
   <div min-w-50vw h-full>

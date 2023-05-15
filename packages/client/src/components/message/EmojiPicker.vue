@@ -2,22 +2,22 @@
 // @ts-expect-error no dts file
 import { EmojiPicker } from 'vue3-twemoji-picker-final'
 
-defineProps<{
-  modelValue: string
-}>()
 const emits = defineEmits<{
-  (event: 'update:modelValue', value: string): void
   (event: 'firstSelect', value: string): void
 }>()
 
+const emoji = defineModel<string>('emoji', {
+  required: true,
+})
+
 let isFirst = true
 function selectEmoji(event: any) {
-  const emoji = event.i as string
+  const _ = event.i as string
   if (isFirst) {
     isFirst = false
-    emits('firstSelect', emoji)
+    emits('firstSelect', _)
   }
-  emits('update:modelValue', emoji)
+  emoji.value = _
 }
 </script>
 
