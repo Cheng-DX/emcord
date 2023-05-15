@@ -4,6 +4,7 @@ import UnoCSS from 'unocss/vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Inspect from 'vite-plugin-inspect'
+import VueDevtools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
   server: {
@@ -16,7 +17,13 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue(),
+    VueDevtools(),
+    vue({
+      script: {
+        // @ts-expect-error defineModel is not yet in the types
+        defineModel: true,
+      },
+    }),
     UnoCSS(),
     Inspect(),
     AutoImport({

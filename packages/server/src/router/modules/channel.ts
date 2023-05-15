@@ -1,8 +1,6 @@
 import type { Message, ReferencedMessagePreview, TokenPayload } from '@emcord/types'
-import { getLinkPreview } from 'link-preview-js'
 import { CustomError, isValidMessage } from '../../utils'
 import { ChannelModel, MessageModel, UserModel } from '../../db/models'
-import { renderer } from '../../utils/renderMD'
 import { findServer } from './server'
 
 export async function findChannel(id: string, options?: {
@@ -47,7 +45,7 @@ export async function formatMsg(
   // if (msg.type === undefined || !msg.content)
   //   throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
 
-  let referencedMessagePreview: ReferencedMessagePreview
+  let referencedMessagePreview: ReferencedMessagePreview | undefined
   if (referencedMessage) {
     const message = await MessageModel.findOne({
       _id: referencedMessage,
@@ -60,6 +58,7 @@ export async function formatMsg(
         content: message.content as any,
         referencedMessage: message.referencedMessage,
         referencedMessagePreview: message.referencedMessagePreview,
+        attachments: message.attachments as any,
       }
     }
   }

@@ -8,7 +8,8 @@
   "keywords": [],
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec 'ts-node-esm --experimental-specifier-resolution=node --logError' src/index.ts"
+    "dev": "nodemon --exec 'ts-node-esm --experimental-specifier-resolution=node --logError' src/index.ts",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@types/markdown-it": "^12.2.3",

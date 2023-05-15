@@ -4,7 +4,6 @@ import mongoose from 'mongoose'
 import { expressjwt } from 'express-jwt'
 import { secretKey } from './consts'
 import { router } from './router'
-import { initWSS } from './ws'
 import './ws/wsio'
 
 mongoose

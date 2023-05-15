@@ -82,4 +82,4 @@ export interface Message {
   referencedMessagePreview?: ReferencedMessagePreview
 }
 
-export type ReferencedMessagePreview = Pick<Message, 'author' | 'content' | 'referencedMessagePreview' | 'referencedMessage'>
+export type ReferencedMessagePreview = Pick<Message, 'author' | 'content' | 'referencedMessagePreview' | 'referencedMessage' | 'attachments'>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Message } from '@emcord/types'
+import type { Message, ReferencedMessagePreview } from '@emcord/types'
 
 const props = defineProps<{
-  message: Message
+  message: ReferencedMessagePreview
   showBar: boolean
 }>()
 
