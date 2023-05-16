@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { Attachment, AttachmentType } from '@emcord/types'
+import type { AttachmentType } from '@emcord/types'
 import { NUpload } from 'naive-ui'
 import type { Ref } from 'vue'
 import type { LoadingFile } from './types'
+import { action } from './__action'
 
 const files = inject<Ref<LoadingFile[]>>('files')!
 
@@ -73,7 +74,7 @@ function onError(_: any) {
 <template>
   <div>
     <NUpload
-      action="https://api.cloudinary.com/v1_1/dwnw5imiw/upload?upload_preset=ggtgkcea"
+      :action="action"
       multiple
       :show-file-list="false"
       flex cursor-pointer

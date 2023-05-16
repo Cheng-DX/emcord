@@ -27,4 +27,4 @@ coverage
 *.sln
 *.sw?
 
-__apiKey__.ts
+__*.ts
