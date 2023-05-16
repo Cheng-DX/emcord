@@ -415,7 +415,7 @@ function send() {
         <div v-if="showUsers && !showSearch" w-240px>
           <ServerUsers :server="server" />
         </div>
-        <div v-show="showSearch" w-450px transition>
+        <div v-show="showSearch" w-450px h-full transition>
           <SearchResult ref="searchResultRef" :query="query" />
         </div>
       </div>

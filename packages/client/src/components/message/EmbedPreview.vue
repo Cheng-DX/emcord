@@ -14,7 +14,7 @@ const imageFailed = ref(false)
 </script>
 
 <template>
-  <div bgc-theme-2 w-350px max-h-550px flex flex-col gap-4px p-block-8px p-inline-12px r-10>
+  <div bgc-theme-2 w-350px max-h-550px max-w-full flex flex-col gap-4px p-block-8px p-inline-12px r-10>
     <span font-500 text-2 c-text-3-trans>{{ url.hostname }}</span>
     <span
       c-4ba5f4 text-4 cursor-pointer hover:underline font-400

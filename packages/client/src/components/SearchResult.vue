@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Message } from '@emcord/types'
+import { NEmpty } from 'naive-ui'
 import MessageCard from './message/MessageCard.vue'
 
 const props = defineProps<{
@@ -24,9 +25,10 @@ defineExpose<{ search: () => void }>({
 </script>
 
 <template>
-  <div overflow-auto w-full>
+  <div v-if="messages.length > 0" overflow-auto w-full>
     <MessageCard v-for="message in messages" :key="message.id" :message="message" />
   </div>
+  <NEmpty v-else w-full h-full flex-center description="没有符合预期的消息" />
 </template>
 
 <style scoped>
