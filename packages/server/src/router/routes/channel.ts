@@ -28,6 +28,34 @@ export function applyChannelMessage(router: Router) {
     }
   })
 
+  router.post('/channels/:id/messages/search', async (req, res) => {
+    const { id } = req.params
+    const { userId } = getAuth(req)
+    const { limit = 1, query } = req.body
+    try {
+      await findChannel(id, {
+        premission: 'MEMBER',
+        userId,
+      })
+      const messages = await MessageModel
+        .find({
+          channelId: id,
+          content: {
+            $regex: query,
+            $options: 'i',
+          },
+        })
+        .limit(Number(limit))
+        .sort({
+          timestamp: -1,
+        })
+      ok(res, messages)
+    }
+    catch (e: any) {
+      err(res, e)
+    }
+  })
+
   router.get('/channels/:id/messages/:messageId', async (req, res) => {
     const { id, messageId } = req.params
     const { userId } = getAuth(req)

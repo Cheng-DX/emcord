@@ -411,11 +411,11 @@ function send() {
           </div>
         </footer>
       </div>
-      <div id="channel-main__right-side" w-auto bgc-theme-2 transition-400>
+      <div id="channel-main__right-side" w-auto overflow-auto bgc-theme-2 transition-400>
         <div v-if="showUsers && !showSearch" w-240px>
           <ServerUsers :server="server" />
         </div>
-        <div v-show="showSearch" w-420px transition>
+        <div v-show="showSearch" w-450px transition>
           <SearchResult ref="searchResultRef" :query="query" />
         </div>
       </div>

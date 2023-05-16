@@ -27,7 +27,7 @@ const attachmentsTitle = computed(() => {
     <div flex flex-1 h-20px ml-4px items-center gap-4px c-text-3 font-italic>
       <img :src="message.author.avator" s-16px r-16>
       <span font-400>{{ message.author.name }}</span>
-      <div wp-80 class="line-text">
+      <div class="line-text">
         {{ message.content || (hasAttachments ? attachmentsTitle : '') }}
       </div>
     </div>
