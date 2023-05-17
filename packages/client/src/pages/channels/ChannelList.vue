@@ -39,20 +39,13 @@ const serverMenuOptions: Option[] = [{
   onClick: () => {
   },
   value: 'server-settings',
-  type: 'primary',
 }, {
-  label: '服务器设置',
-  icon: 'i-ic-baseline-settings',
+  label: '删除服务器',
+  icon: 'i-ic-delete',
   onClick: () => {
   },
-  value: 'server-settings',
   type: 'danger',
-}, {
-  label: '服务器设置',
-  icon: 'i-ic-baseline-settings',
-  onClick: () => {
-  },
-  value: 'server-settings',
+  value: 'delete-server',
 }]
 
 const [channelMenu, toggleChannelMenu] = useToggle(false)

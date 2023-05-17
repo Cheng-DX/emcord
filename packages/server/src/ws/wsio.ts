@@ -8,7 +8,7 @@ import { secretKey } from '../consts'
 import { findUser } from '../router/modules/user'
 import { setOnline } from '../router/modules/server'
 import { editMsg, findChannel, sendMsg } from '../router/modules/channel'
-import { arcKey } from '../../__apiKey__'
+import { arcKey } from '../../__apiKey'
 
 const config = new Configuration({
   apiKey: arcKey,

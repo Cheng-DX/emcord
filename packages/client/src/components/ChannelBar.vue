@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Channel } from '@emcord/types'
+import { useActiveTabs } from '~/composables/useActiveTabs'
 
 const props = defineProps<{
   serverId?: string
@@ -20,6 +21,12 @@ const isActive = computed(() => {
 function settings() {
   // console.log('settings')
 }
+
+const { activeTabs } = useActiveTabs()
+function goto() {
+  activeTabs.value[props.serverId!] = props.channel.id
+  router.push(routerPath.value)
+}
 </script>
 
 <template>
@@ -39,7 +46,7 @@ function settings() {
     }"
     class="channel-bar"
     :class="isActive ? 'active' : ''"
-    @click="() => router.push(routerPath)"
+    @click="goto()"
   >
     <div
       v-if="hasUnread"

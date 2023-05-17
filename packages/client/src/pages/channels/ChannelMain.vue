@@ -52,12 +52,8 @@ function onRemove(url: string) {
 }
 
 watch(data, n => {
-  if (n) {
+  if (n)
     messages.value = n.reverse()
-    setTimeout(() => {
-      move(false)
-    }, 0)
-  }
 })
 
 const hasAttachment = computed(() => {
