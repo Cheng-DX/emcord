@@ -4,7 +4,7 @@ export function useActiveTabs() {
   })
 
   function setActiveTab(serverId: string, tab: string) {
-    activeTanbs.value[serverId] = tab
+    activeTabs.value[serverId] = tab
   }
 
   return {
