@@ -2,12 +2,14 @@ import express from 'express'
 import consola from 'consola'
 import mongoose from 'mongoose'
 import { expressjwt } from 'express-jwt'
-import { secretKey } from './consts'
+import { config } from 'dotenv'
 import { router } from './router'
 import './ws/wsio'
 
+config()
+
 mongoose
-  .connect('mongodb://127.0.0.1:27017/emcord')
+  .connect(process.env.DB_URL || 'mongodb://127.0.0.1:27017/emcord')
   .then(() => consola.success('MongoDB database Connected'))
   .catch((err) => {
     consola.warn('Connection failed')
@@ -18,7 +20,7 @@ const app = express()
 app.use(express.json())
 app.use(
   expressjwt({
-    secret: secretKey,
+    secret: process.env.SECRET_KEY!,
     algorithms: ['HS256'],
   }).unless({
     path: [

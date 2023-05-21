@@ -28,3 +28,4 @@ coverage
 *.sw?
 
 __*.ts
+.env

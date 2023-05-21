@@ -4,7 +4,6 @@ import type { Embed, Message, TokenPayload, User } from '@emcord/types'
 import consola from 'consola'
 import { Configuration, OpenAIApi } from 'openai'
 import { getLinkPreview } from 'link-preview-js'
-import { secretKey } from '../consts'
 import { findUser } from '../router/modules/user'
 import { setOnline } from '../router/modules/server'
 import { editMsg, findChannel, sendMsg } from '../router/modules/channel'
@@ -45,7 +44,7 @@ function useAuth() {
 
     info.auth = verify(
       token,
-      secretKey,
+      process.env.SECRET_KEY!,
     ) as TokenPayload
     info.user = await findUser(info.auth.userId) as any
     info.authed = true

@@ -2,7 +2,6 @@ import type { Router } from 'express'
 import JWT from 'jsonwebtoken'
 import sha256 from 'crypto-js/sha256'
 import type { User } from '@emcord/types'
-import { secretKey } from '../../consts'
 import { AuthModel, UserModel } from '../../db/models'
 import { CustomError, err, ok } from '../../utils'
 
@@ -27,7 +26,7 @@ export function applyAuth(router: Router) {
             avator: user.avator,
             profile: user.profile,
           },
-          secretKey,
+          process.env.SECRET_KEY!,
           { expiresIn },
         )
         ok(res, {

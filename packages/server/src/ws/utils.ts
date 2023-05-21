@@ -1,7 +1,6 @@
 import consola from 'consola'
 import type { RawData, WebSocket } from 'ws'
 import JWT from 'jsonwebtoken'
-import { secretKey } from '../consts'
 
 export function jsonParse<T>(ws: WebSocket, data: RawData) {
   try {
@@ -45,7 +44,7 @@ export function verifyToken(token?: string) {
   try {
     const result = JWT.verify(
       token,
-      secretKey,
+      process.env.SECRET_KEY!,
     ) as { userId: string }
     return [true, result] as const
   }
