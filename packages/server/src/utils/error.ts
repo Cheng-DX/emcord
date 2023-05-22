@@ -76,7 +76,7 @@ export function isValidMessage(msg: Partial<Message>) {
     return false
   switch (msg.type) {
     case 0:
-      // normal
+      // norma
       return !!msg.content
     case 1:
       // attach

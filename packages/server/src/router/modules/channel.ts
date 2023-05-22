@@ -45,6 +45,9 @@ export async function formatMsg(
   // if (msg.type === undefined || !msg.content)
   //   throw new CustomError('INVALID_REQUEST', 'Message needs field \'type\' and \'content\'')
 
+  if (!isValidMessage({ type, content, attachments, embeds, referencedMessage }))
+    throw new CustomError('INVALID_REQUEST', 'Your message is NOT valid')
+
   let referencedMessagePreview: ReferencedMessagePreview | undefined
   if (referencedMessage) {
     const message = await MessageModel.findOne({
@@ -62,9 +65,6 @@ export async function formatMsg(
       }
     }
   }
-
-  if (!isValidMessage({ type, content, attachments, embeds, referencedMessage }))
-    throw new CustomError('INVALID_REQUEST', 'Your message is NOT valid')
 
   // parse mentions
   const mentions = content!.match(/<@(\w+)>/g)
