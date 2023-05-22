@@ -20,7 +20,7 @@ const openaiPayload = {
 
 const wss = new Server({
   cors: {
-    origin: 'https://*.netlify.app',
+    origin: 'https://emcord.netlify.app',
   },
 })
 
