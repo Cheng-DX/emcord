@@ -21,7 +21,7 @@ mongoose
 
 const app = express()
 app.use(cors({
-  origin: 'https://emcord.netlify.app/',
+  origin: 'https://emcord.netlify.app',
   optionsSuccessStatus: 200,
 }))
 
