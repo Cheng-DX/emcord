@@ -2,7 +2,7 @@ import { type Socket, io } from 'socket.io-client'
 import consola from 'consola'
 import type { Attachment, Message } from '@emcord/types'
 
-const URL = 'wss://emcord.onrender.com'
+const URL = 'https://emcord.onrender.com'
 
 export function useSocket() {
   const [connected, toggle] = useToggle(false)
