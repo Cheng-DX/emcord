@@ -29,4 +29,5 @@ export const useFetch = createFetch({
   fetchOptions: {
     mode: 'cors',
   },
+  baseUrl: 'https://emcord.onrender.com',
 })

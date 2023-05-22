@@ -9,12 +9,6 @@ import VueDevtools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   server: {
     cors: true,
-    proxy: {
-      '/api': {
-        target: 'https://emcord.onrender.com',
-        changeOrigin: true,
-      },
-    },
   },
   envDir: './env',
   plugins: [
