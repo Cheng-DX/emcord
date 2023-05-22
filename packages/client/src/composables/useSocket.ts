@@ -34,7 +34,9 @@ export function useSocket() {
 
   watch(token, (newToken) => {
     if (!connected.value) {
-      socket.value = io(URL)
+      socket.value = io(URL, {
+        port: 9527,
+      })
 
       socket.value.on('connect', () => {
         toggle(true)
