@@ -16,6 +16,7 @@ export default defineConfig({
       },
     },
   },
+  envDir: './env',
   plugins: [
     VueDevtools(),
     vue({

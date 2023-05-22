@@ -3,7 +3,8 @@ import type { AttachmentType } from '@emcord/types'
 import { NUpload } from 'naive-ui'
 import type { Ref } from 'vue'
 import type { LoadingFile } from './types'
-import { action } from './action'
+
+const action = import.meta.env.ACTION
 
 const files = inject<Ref<LoadingFile[]>>('files')!
 
