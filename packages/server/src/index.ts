@@ -34,7 +34,7 @@ app.use(
     path: [
       '/api/login',
       '/api/register',
-      'socket.io/',
+      '/socket.io/',
     ],
   }),
 )
