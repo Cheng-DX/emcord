@@ -3,6 +3,7 @@ import consola from 'consola'
 import mongoose from 'mongoose'
 import { expressjwt } from 'express-jwt'
 import { config } from 'dotenv'
+import cors from 'cors'
 import { router } from './router'
 import './ws/wsio'
 
@@ -19,6 +20,11 @@ mongoose
   })
 
 const app = express()
+app.use(cors({
+  origin: 'https://emcord.netlify.app/',
+  optionsSuccessStatus: 200,
+}))
+
 app.use(express.json())
 app.use(
   expressjwt({
@@ -47,12 +53,6 @@ app.use((err, _req, res, _next) => {
 })
 
 app.use('/api', router)
-// cors
-app.use((_req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://emcord.netlify.app')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  next()
-})
 app.listen(3000, () => {
   consola.success('Server started at port 3000')
 })
